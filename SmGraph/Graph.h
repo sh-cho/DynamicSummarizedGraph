@@ -2,6 +2,9 @@
 #include "base_header.h"
 using namespace std;
 
+class Attribute
+{
+};
 class Edge
 {
 public:

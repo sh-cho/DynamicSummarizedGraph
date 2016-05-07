@@ -21,3 +21,5 @@
 #define is ==
 #define isnot !=
 #define not !
+
+//#define Error INT_MAX
