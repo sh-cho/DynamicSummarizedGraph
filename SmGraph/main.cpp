@@ -1,4 +1,3 @@
-//#include "random.hpp"
 #include "Graph.h"
 #include "GraphLoader.hpp"
 #include "DynamicSummarization.h"
@@ -8,8 +7,8 @@
 
 int main()
 {
-    string filename = "dataset/facebook_combined.txt";
-    
+	string filename = "dataset/facebook_combined.txt";
+
 	debug::memory_bomb mb;
 	{
 		Graph* graph = readGraph(filename);
@@ -18,13 +17,13 @@ int main()
 		delete sm_graph;
 	}
 	mb.leakCheck();
-    int s, t;
-    for (int i = 0; i < 1000; i++)
-    {
-        s = random::Int(0, 4000);
-        t = random::Int(0, 4000);
-        //DynamicSummarization::addEdge(sm_graph, graph, 0, 100);
-    }
-    
-    return 0;
+	int s, t;
+	for (int i = 0; i < 1000; i++)
+	{
+		s = random::Int(0, 4000);
+		t = random::Int(0, 4000);
+		//DynamicSummarization::addEdge(sm_graph, graph, 0, 100);
+	}
+
+	return 0;
 }
