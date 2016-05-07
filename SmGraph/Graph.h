@@ -2,6 +2,9 @@
 #include "base_header.h"
 using namespace std;
 
+
+enum NODE_TYPE { NORMAL_NODE = 1, SUPER_NODE };
+
 /////////////////////////////////////////////////////
 // Edge
 class Edge

@@ -23,7 +23,9 @@ public:
             return minus_correction;
         return vector<int>();
     }
-    virtual int getType() { return 1; };
+    virtual int getType() { return NORMAL_NODE; }
+
+
 private:
     int parent = -1;
     vector<int> plus_correction;
@@ -45,25 +47,27 @@ public:
         }
         return false;
     }
-    virtual int getType() { return 2; };
+    virtual int getType() { return SUPER_NODE; }
+
+
 private:
     vector<int> summarized_nodes;
 };
 
-class SuperEdge : Edge
-{
-public:
-    auto& getMinusCorrections() { return minus_corrections; }
-    auto isReal(int sid, int tid)
-    {
-        for (auto e : minus_corrections)
-        {
-            if ((e.first == sid && e.second == tid) ||
-                (e.second == sid && e.first == tid))
-                return false;
-        }
-        return true;
-    }
-private:
-    vector<pair<int, int>> minus_corrections;
-};
+//class SuperEdge : Edge
+//{
+//public:
+//    auto& getMinusCorrections() { return minus_corrections; }
+//    auto isReal(int sid, int tid)
+//    {
+//        for (auto e : minus_corrections)
+//        {
+//            if ((e.first == sid && e.second == tid) ||
+//                (e.second == sid && e.first == tid))
+//                return false;
+//        }
+//        return true;
+//    }
+//private:
+//    vector<pair<int, int>> minus_corrections;
+//};

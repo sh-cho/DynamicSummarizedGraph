@@ -49,7 +49,7 @@ Graph* readSummarizedGraph(string filename)
     }
     {
         fin.open(filename + ".map");
-        int s, t;
+        //int s, t;
         string record;
         while (getline(fin, record))
         {
@@ -62,7 +62,7 @@ Graph* readSummarizedGraph(string filename)
             {
                 SuperNode* sp = (SuperNode*)graph->add((Node*)(new SuperNode(items[0])));
                 auto& snode_idset = sp->getSummarizedNodeIds();
-                for (int i = 1; i < items.size(); ++i)
+                for (unsigned int i = 1; i < items.size(); ++i)
                 {
                     snode_idset.emplace_back(items[i]);
                     NormalNode* np = new NormalNode(items[i]);

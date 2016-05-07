@@ -9,7 +9,7 @@ Graph::Graph()
 
 Graph::~Graph()
 {
-	for (int i = 0; i < nodes.size(); i++)
+	for (unsigned int i = 0; i < nodes.size(); i++)
 	{
 		if (nodes[i] != NULL)
 		{
@@ -21,7 +21,7 @@ Graph::~Graph()
 Node* Graph::add(Node * pnode)
 {
     int id = pnode->getId();
-    if (nodes.size() <= id)
+    if (nodes.size() <= (unsigned)id)
         nodes.resize(id+1, NULL);
     nodes[id] = pnode;
     return pnode;
@@ -55,7 +55,7 @@ auto Edge::getOther(int one)
 
 Node::~Node()
 {
-	for (int i = 0; i < edges.size(); i++)
+	for (unsigned int i = 0; i < edges.size(); i++)
 	{
 		if (edges[i] != NULL)
 		{

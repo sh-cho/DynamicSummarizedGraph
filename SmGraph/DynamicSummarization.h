@@ -8,7 +8,7 @@ public:
     {
         auto* np = sg.get(id);
         vector<int> neighbors;
-        if (id < original.getNodeCount())
+        if ((unsigned)id < original.getNodeCount())
         {
             NormalNode* npp = (NormalNode*)original.get(id);
             auto& edges = npp->getEdges();
@@ -49,8 +49,8 @@ public:
         vector<int> result;
         set_intersection(set1.begin(), set1.end(), set2.begin(), set2.end(), std::back_inserter(result));
         double case1_cost = (double)(result.size() + set1.size() - result.size() + set2.size() - result.size())/total;
-        static int advance_count = 0;
-        advance_count+=(1 - case1_cost) * total;
+        static double advance_count = 0;
+        advance_count += (1 - case1_cost) * total;
         cout << "====>advance_count:" << advance_count << endl;
         //모두 +로 묵는경우
         if (1 - case1_cost > 0)
