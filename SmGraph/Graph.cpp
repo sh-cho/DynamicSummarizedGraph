@@ -9,7 +9,13 @@ Graph::Graph()
 
 Graph::~Graph()
 {
-	//노드 삭제
+	for (int i = 0; i < nodes.size(); i++)
+	{
+		if (nodes[i] != NULL)
+		{
+			delete nodes[i];
+		}
+	}
 }
 
 Node* Graph::add(Node * pnode)
@@ -49,5 +55,11 @@ auto Edge::getOther(int one)
 
 Node::~Node()
 {
-	//엣지 삭제
+	for (int i = 0; i < edges.size(); i++)
+	{
+		if (edges[i] != NULL)
+		{
+			delete edges[i];
+		}
+	}
 }

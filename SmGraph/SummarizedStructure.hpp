@@ -5,7 +5,7 @@ class NormalNode : public Node
 {
 public:
     NormalNode(int id) :Node(id) { parent = id; }
-    virtual ~NormalNode() {}
+	virtual ~NormalNode() {}
     void setParent(int id) { parent = id; }
     int getParent() { return parent; }
     void addCorrectionTarget(char c, int id) 
