@@ -1,6 +1,7 @@
 #pragma once
 #include "Graph.h"
 #include "SummarizedStructure.hpp"
+
 class DynamicSummarization
 {
 public:
@@ -99,29 +100,35 @@ public:
 	}
     static void addEdge(Graph& sg, Graph& origin, int src, int trg)
     {
-        auto* snode = sg.get(src);
-        auto* tnode = sg.get(trg);
-        int stype = snode->getType();
-        int ttype = tnode->getType();
-        if (stype == 1 && ttype == 1)
-        {
-            NormalNode* srcParticleNode = (NormalNode*)snode;
-            NormalNode* trgParticleNode = (NormalNode*)tnode;
-            if (srcParticleNode->getParent() == trgParticleNode->getParent())	//A와 B가 같은 슈퍼노드 안에 있을 때
-            {
-                srcParticleNode->addCorrectionTarget('+', trg);
-                trgParticleNode->addCorrectionTarget('+', src);
-            }
-            else if (srcParticleNode->getParent() == src && trgParticleNode->getParent() == trg)	//A와 B가 일반노드일 때
-            {
-                sg.add(new Edge(src, trg));
-            }
-            else
-            {
-                //getCost(sg, origin, src, trg);
-				dynamicSummarize(sg, origin, src, trg);
-            }
-        }
+    //    auto* snode = sg.get(src);
+    //    auto* tnode = sg.get(trg);
+    //    int stype = snode->getType();
+    //    int ttype = tnode->getType();
+    //    if (stype == 1 && ttype == 1)
+    //    {
+    //        NormalNode* srcParticleNode = (NormalNode*)snode;
+    //        NormalNode* trgParticleNode = (NormalNode*)tnode;
+    //        if (srcParticleNode->getParent() == trgParticleNode->getParent())	//A와 B가 같은 슈퍼노드 안에 있을 때
+    //        {
+    //            srcParticleNode->addCorrectionTarget('+', trg);
+    //            trgParticleNode->addCorrectionTarget('+', src);
+    //        }
+    //        else if (srcParticleNode->getParent() == src && trgParticleNode->getParent() == trg)	//A와 B가 일반노드일 때
+    //        {
+    //            sg.add(new Edge(src, trg));
+    //        }
+    //        else
+    //        {
+    //            //getCost(sg, origin, src, trg);
+				//dynamicSummarize(sg, origin, src, trg);
+    //        }
+    //    }
+		
+		//1. add edge
+		sg.add(new Edge(src, trg));
+
+		//2. do summarize
+		dynamicSummarize(sg, origin, src, trg);
     }
 };
 

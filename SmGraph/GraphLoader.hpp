@@ -1,3 +1,4 @@
+#pragma once
 #include "Graph.h"
 #include "SummarizedStructure.hpp"
 
@@ -8,17 +9,18 @@ Graph* readGraph(string filename)
 {
 	Graph* graph = new Graph();
     ifstream fin(filename);
-    int s, t;
-    int max_id = -1;
+    int s, t, max_id = -1;
     vector<pair<int, int>> edges;
-    while (fin >> s >> t)
-    {
-        edges.emplace_back(pair<int, int>{ s, t });
-        max_id = std::max({ s, t, max_id });
+	while (fin >> s >> t)
+	{
+		edges.emplace_back(pair<int, int>(s, t));
+		max_id = std::max<int>({s, t, max_id});
     }
 
-    for (int i = 0; i <= max_id; ++i)
-        graph->add(new Node(i));
+	for (int i = 0; i <= max_id; ++i)
+	{
+		graph->add(new Node(i));
+	}
 
     for (pair<int, int> e : edges)
     {
@@ -43,7 +45,7 @@ Graph* readSummarizedGraph(string filename)
         while (fin >> s >> t)
         {
             id_map[t] = s;
-            max_id = max({ s, t, max_id });
+			max_id = std::max<int>({ s, t, max_id });
         }
         fin.close();
     }
