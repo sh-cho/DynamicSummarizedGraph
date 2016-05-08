@@ -292,16 +292,17 @@ public:
 		
 		auto& ns1 = getNeighborNodes(sg, origin, id1);
 		auto& ns2 = getNeighborNodes(sg, origin, id2);
-		int total = (int)ns1.size() + (int)ns2.size();
+		int total = (int)ns1.size() + (int)ns2.size();		// c_u + c_v
 		set<int> set1(ns1.begin(), ns1.end());
 		set<int> set2(ns2.begin(), ns2.end());
 		vector<int> interSection;
 		set_intersection(set1.begin(), set1.end(), set2.begin(), set2.end(), std::back_inserter(interSection));
+		int c_w = set1.size() + set2.size() - interSection.size();
 
 		//debug
-		cout << "ratio:" << (double)(set1.size() + set2.size() - interSection.size()) / (total) << endl;
+		cout << "ratio:" << (double)(set1.size() + set2.size() - c_w) / (total) << endl;
 
-		return (double)(set1.size() + set2.size() - interSection.size())/(total);
+		return (double)(set1.size() + set2.size() - c_w)/(total);
 	}
 
 	static int getRandomNodeInSubgraph(Graph& sg, Graph& origin, set<int> subgraph, int u = -1)
