@@ -84,6 +84,7 @@ public:
 				v = getRandomNodeInSubgraph(sg, origin, subgraph, u);	//any unchecked U2 in subraph
 
 
+				//debug
 				printf("u:%d, v:%d\n", u, v);
 
 
@@ -126,9 +127,24 @@ public:
 				NormalNode* srcNode = (NormalNode*)sNode;
 				NormalNode* trgNode = (NormalNode*)tNode;
 
+				//임시. u 또는 v가 supernode일 때
+				//checknodelist에 추가
+				if (srcNode->getType() == SUPER_NODE)
+				{
+					checkedNodeList.emplace(u);
+					continue;
+				}
+				else if (trgNode->getType() == SUPER_NODE)
+				{
+					checkedNodeList.emplace(v);
+					continue;
+				}
+
+
+
 				//요약되는지 확인
 				//1. in same supernode
-				//2. in diff supernode
+				//2. in different supernode
 				//3. supernode - normalnode
 				//4. normalnode
 				if (!sameParentAndId(srcNode) && !sameParentAndId(trgNode))	//1, 2
@@ -148,6 +164,7 @@ public:
 						sp->addSummarizedNode(v);	//superNode 추가 뒤 노드 추가
 						auto& spNeighbor = sp->getEdges();
 						int spID = sp->getId();
+
 
 
 						//add in subgraph
@@ -273,9 +290,6 @@ public:
 	{
 		//return s(id1, id2)
 		
-		//debug
-		return (rand() % 2);
-
 		auto& ns1 = getNeighborNodes(sg, origin, id1);
 		auto& ns2 = getNeighborNodes(sg, origin, id2);
 		int total = (int)ns1.size() + (int)ns2.size();
@@ -284,7 +298,8 @@ public:
 		vector<int> interSection;
 		set_intersection(set1.begin(), set1.end(), set2.begin(), set2.end(), std::back_inserter(interSection));
 
-		//cout << "ratio:" << (double)(set1.size() + set2.size() - interSection.size()) / (total) << endl;
+		//debug
+		cout << "ratio:" << (double)(set1.size() + set2.size() - interSection.size()) / (total) << endl;
 
 		return (double)(set1.size() + set2.size() - interSection.size())/(total);
 	}

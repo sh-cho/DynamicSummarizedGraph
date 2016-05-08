@@ -35,7 +35,11 @@ int main()
 		Graph* graph = readGraph(filename);
 		Graph* sm_graph = readSummarizedGraph(filename);
 
+		
+		//add one edge test
 		DynamicSummarization::addEdgeAndSummarize(*sm_graph, *graph, 21, 101);
+
+
 
 		delete graph;
 		delete sm_graph;
