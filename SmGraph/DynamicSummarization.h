@@ -77,9 +77,14 @@ public:
 				noU2Exist = false;
 			
 
+			//subgraph 안의 임의의 u, v를 get
+			//u나 v가 checkNodeList에 있으면 다시 u, v를 받아옴
 			do {
 				u = getRandomNodeInSubgraph(sg, origin, subgraph);	//any unchecked node in subgraph
 				v = getRandomNodeInSubgraph(sg, origin, subgraph, u);	//any unchecked U2 in subraph
+
+
+				printf("u:%d, v:%d\n", u, v);
 
 
 				if (u == -1)
@@ -87,8 +92,7 @@ public:
 					noUExist = false;
 					break;
 				}
-
-				if (v == -1)	//v is not exist
+				else if (v == -1)	//v is not exist
 				{
 					noU2Exist = true;
 					break;
@@ -96,23 +100,24 @@ public:
 			} while (checkedNodeList.find(u)!=enditer
 				&& checkedNodeList.find(v)!=enditer);
 
-			if (noUExist)	//u가 없을 경우
+			//u or v is not exist
+			//if v is not exist -> check u
+			if (noUExist)
 			{
 				continue;
 			}
-			else if (noU2Exist)	//u에 해당하는 u2가 없을 경우 -> check u
+			else if (noU2Exist)
 			{
 				checkedNodeList.emplace(u);
 				continue;
 			}
 
-			
-			result.clear();
+
 			//summarize check
+			result.clear();
 			if (getSummarizeRatio(sg, origin, u, v) > 0)
 			{
 				//do summarize
-
 				auto* sNode = sg.get(u);
 				auto* tNode = sg.get(v);
 				auto& sEdges = sNode->getEdges();
@@ -121,41 +126,125 @@ public:
 				NormalNode* srcNode = (NormalNode*)sNode;
 				NormalNode* trgNode = (NormalNode*)tNode;
 
+				//요약되는지 확인
 				//1. in same supernode
 				//2. in diff supernode
 				//3. supernode - normalnode
 				//4. normalnode
 				if (!sameParentAndId(srcNode) && !sameParentAndId(trgNode))	//1, 2
 				{
-					std::set_difference(set1.begin(), set1.end(), set2.begin(), set2.end(), std::back_inserter(result));
-					for (int nodeID : result)
-						sg.add(new Edge(id2, nodeID));
+					//이미 요약이 되어있기 때문에 checkedNodeList에 추가
+					if (srcNode->getParent() == trgNode->getParent()) //in same supernode
+					{
+						//check v
+						checkedNodeList.emplace(v);
+						continue;
+					}
+					else //diff supernode
+					{
+						//SuperNode 합치기
+						SuperNode* sp = (SuperNode*)sg.add((Node*)(new SuperNode((int)sg.getNodeCount() + 1)));
+						sp->addSummarizedNode(u);
+						sp->addSummarizedNode(v);	//superNode 추가 뒤 노드 추가
+						auto& spNeighbor = sp->getEdges();
+						int spID = sp->getId();
 
-					result.clear();
-					std::set_difference(set2.begin(), set2.end(), set1.begin(), set1.end(), std::back_inserter(result));
-					for (int nodeID : result)
-						sg.add(new Edge(id1, nodeID));
+
+						//add in subgraph
+						subgraph.emplace(spID);
 
 
-					//w, w2 추가
+						//이웃노드 체크 해제
+						set<int>::iterator setIter;
+						auto& snNeighbor = sp->getEdges();
+						for (Edge* edge : snNeighbor)
+						{
+							int neighborID = edge->getOther(spID);
+
+							//find and erase
+							setIter = checkedNodeList.find(neighborID);
+							if (setIter != checkedNodeList.end())
+								checkedNodeList.erase(setIter);
+						}
+					}
 				}
-				else if (!sameParentAndId(srcNode)) //3-1. src is in SuperNode
+				else if (!sameParentAndId(srcNode))	//3-1. U is exist in supernode
 				{
-					result.clear();
-					std::set_difference(set2.begin(), set2.end(), set1.begin(), set1.end(), std::back_inserter(result));
-					for (int nodeID : result)
-						sg.add(new Edge(id2, nodeID));
-				}
-				else if (!sameParentAndId(trgNode)) //3-2. trg is in SuperNode
-				{
-					std::set_difference(set1.begin(), set1.end(), set2.begin(), set2.end(), std::back_inserter(result));
-					for (int nodeID : result)
-						sg.add(new Edge(id1, nodeID));
-				}
-				else //4
-				{
-					//
+					//SuperNode 하나로 합치기
+					SuperNode* sp = (SuperNode*)sg.get(srcNode->getParent());
+					sp->addSummarizedNode(trgNode->getId());
+					auto& spNeighbor = sp->getEdges();
+					int spID = sp->getId();
 
+
+					//add in subgraph
+					subgraph.emplace(spID);
+
+					//이웃노드 체크 해제
+					set<int>::iterator setIter;
+					auto& snNeighbor = sp->getEdges();
+					for (Edge* edge : snNeighbor)
+					{
+						int neighborID = edge->getOther(spID);
+
+						//find and erase
+						setIter = checkedNodeList.find(neighborID);
+						if (setIter != checkedNodeList.end())
+							checkedNodeList.erase(setIter);
+					}
+				}
+				else if (!sameParentAndId(trgNode))	//3-2. V is exist in supernode
+				{
+					//SuperNode 하나로 합치기
+					SuperNode* sp = (SuperNode*)sg.get(trgNode->getParent());
+					sp->addSummarizedNode(srcNode->getId());
+					auto& spNeighbor = sp->getEdges();
+					int spID = sp->getId();
+
+
+					//add in subgraph
+					subgraph.emplace(spID);
+
+
+					//이웃노드 체크 해제
+					set<int>::iterator setIter;
+					auto& snNeighbor = sp->getEdges();
+					for (Edge* edge : snNeighbor)
+					{
+						int neighborID = edge->getOther(spID);
+
+						//find and erase
+						setIter = checkedNodeList.find(neighborID);
+						if (setIter != checkedNodeList.end())
+							checkedNodeList.erase(setIter);
+					}
+				}
+				else //4. 일반노드
+				{
+					//make new supernode
+					SuperNode* sp = (SuperNode*)sg.add((Node*)(new SuperNode((int)sg.getNodeCount() + 1)));
+					sp->addSummarizedNode(u);
+					sp->addSummarizedNode(v);	//superNode 추가 뒤 노드 추가
+					auto& spNeighbor = sp->getEdges();
+					int spID = sp->getId();
+					
+
+					//add in subgraph
+					subgraph.emplace(spID);
+
+
+					//이웃노드 체크 해제
+					set<int>::iterator setIter;
+					auto& snNeighbor = sp->getEdges();
+					for (Edge* edge : snNeighbor)
+					{
+						int neighborID = edge->getOther(spID);
+
+						//find and erase
+						setIter = checkedNodeList.find(neighborID);
+						if (setIter != checkedNodeList.end())
+							checkedNodeList.erase(setIter);
+					}
 				}
 			}
 			else
@@ -167,40 +256,25 @@ public:
 
 	static void addEdgeAndSummarize(Graph& sg, Graph& origin, int src, int trg)
 	{
-		//    auto* snode = sg.get(src);
-		//    auto* tnode = sg.get(trg);
-		//    int stype = snode->getType();
-		//    int ttype = tnode->getType();
-		//    if (stype == 1 && ttype == 1)
-		//    {
-		//        NormalNode* srcParticleNode = (NormalNode*)snode;
-		//        NormalNode* trgParticleNode = (NormalNode*)tnode;
-		//        if (srcParticleNode->getParent() == trgParticleNode->getParent())	//A와 B가 같은 슈퍼노드 안에 있을 때
-		//        {
-		//            srcParticleNode->addCorrectionTarget('+', trg);
-		//            trgParticleNode->addCorrectionTarget('+', src);
-		//        }
-		//        else if (srcParticleNode->getParent() == src && trgParticleNode->getParent() == trg)	//A와 B가 일반노드일 때
-		//        {
-		//            sg.add(new Edge(src, trg));
-		//        }
-		//        else
-		//        {
-		//            //getCost(sg, origin, src, trg);
-		//dynamicSummarize(sg, origin, src, trg);
-		//        }
-		//    }
-
 		//1. add edge
 		sg.add(new Edge(src, trg));
 
-		//2. do summarize
+		//2. if nodes are exist in same supernode
+		auto* sNode = sg.get(src);
+		auto* tNode = sg.get(trg);
+		if (((NormalNode*)sNode)->getParent() == ((NormalNode*)tNode)->getParent())
+			return;
+
+		//3. do summarize
 		dynamicSummarize(sg, origin, src, trg);
 	}
 
 	static double getSummarizeRatio(Graph& sg, Graph& origin, int id1, int id2)
 	{
 		//return s(id1, id2)
+		
+		//debug
+		return (rand() % 2);
 
 		auto& ns1 = getNeighborNodes(sg, origin, id1);
 		auto& ns2 = getNeighborNodes(sg, origin, id2);
@@ -210,7 +284,7 @@ public:
 		vector<int> interSection;
 		set_intersection(set1.begin(), set1.end(), set2.begin(), set2.end(), std::back_inserter(interSection));
 
-		cout << "ratio:" << (double)(set1.size() + set2.size() - interSection.size()) / (total) << endl;
+		//cout << "ratio:" << (double)(set1.size() + set2.size() - interSection.size()) / (total) << endl;
 
 		return (double)(set1.size() + set2.size() - interSection.size())/(total);
 	}

@@ -29,14 +29,21 @@ int main()
 	}*/
 
 
-	Graph* graph = readGraph(filename);
-	Graph* sm_graph = readSummarizedGraph(filename);
 
-	//unit test -> edge 1개 추가 후 테스트
-	DynamicSummarization::addEdgeAndSummarize(*sm_graph, *graph, 0, 1);
+	{
+		debug::time_bomb tb;
+		Graph* graph = readGraph(filename);
+		Graph* sm_graph = readSummarizedGraph(filename);
 
-	delete graph;
-	delete sm_graph;
+		DynamicSummarization::addEdgeAndSummarize(*sm_graph, *graph, 21, 101);
+
+		delete graph;
+		delete sm_graph;
+	}
+	cout << endl;
+
+
+
 
 	return 0;
 }

@@ -21,7 +21,7 @@ public:
 	auto getSource() { return nodes[0]; }
 	auto getTarget() { return nodes[1]; }
 	auto getNodes() { return nodes; }
-	auto getOther(int one);
+	int getOther(int one);
 
 
 protected:

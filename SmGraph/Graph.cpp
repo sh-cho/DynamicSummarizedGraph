@@ -44,7 +44,7 @@ Node* Graph::get(int id)
 	return p;
 }
 
-auto Edge::getOther(int one)
+int Edge::getOther(int one)
 {
 	if (nodes[0] == one)
 		return nodes[1];
