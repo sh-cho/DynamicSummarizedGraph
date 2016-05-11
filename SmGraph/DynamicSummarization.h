@@ -85,7 +85,7 @@ public:
 
 
 				//debug
-				printf("u:%d, v:%d\n", u, v);
+				//printf("u:%d, v:%d\n", u, v);
 
 
 				if (u == -1)
@@ -263,10 +263,18 @@ public:
 							checkedNodeList.erase(setIter);
 					}
 				}
+
+
+				//임시
+				//탐색 range를 두 노드로 설정
+				return;
 			}
 			else
 			{
 				checkedNodeList.emplace(v);
+
+				//임시
+				checkedNodeList.emplace(u);
 			}
 		} //while
 	} //dynamicSummarize
@@ -289,19 +297,20 @@ public:
 	static double getSummarizeRatio(Graph& sg, Graph& origin, int id1, int id2)
 	{
 		//return s(id1, id2)
-		
+
 		auto& ns1 = getNeighborNodes(sg, origin, id1);
 		auto& ns2 = getNeighborNodes(sg, origin, id2);
-		int total = (int)ns1.size() + (int)ns2.size();
+		int total = (int)ns1.size() + (int)ns2.size();      // c_u + c_v
 		set<int> set1(ns1.begin(), ns1.end());
 		set<int> set2(ns2.begin(), ns2.end());
 		vector<int> interSection;
 		set_intersection(set1.begin(), set1.end(), set2.begin(), set2.end(), std::back_inserter(interSection));
+		int c_w = (int)set1.size() + (int)set2.size() - (int)interSection.size();
 
 		//debug
-		cout << "ratio:" << (double)(set1.size() + set2.size() - interSection.size()) / (total) << endl;
+		//cout << "ratio:" << (double)(set1.size() + set2.size() - c_w) / (total) << endl;
 
-		return (double)(set1.size() + set2.size() - interSection.size())/(total);
+		return (double)(set1.size() + set2.size() - c_w) / (total);
 	}
 
 	static int getRandomNodeInSubgraph(Graph& sg, Graph& origin, set<int> subgraph, int u = -1)
@@ -339,6 +348,38 @@ public:
 
 
 		return nodeID;
+	}
+
+	static void countEdges(Graph& sg, Graph& origin)
+	{
+		int sgCnt = 0,
+			origCnt = 0;
+
+		auto sNodes = sg.getNodes();
+		auto oNodes = origin.getNodes();
+
+		for (auto node : sNodes)
+		{
+			if (!node)
+				continue;
+			sgCnt += node->getEdges().size();
+			
+			//pluscorr
+			if (node->getType() == SUPER_NODE)
+			{
+				SuperNode* sp = (SuperNode*)node;
+				sgCnt += sp->getEdges().size();
+			}
+		}
+
+		for (auto node : oNodes)
+		{
+			if (!node)
+				continue;
+			origCnt += node->getEdges().size();
+		}
+
+		//printf("sg:%d, orig:%d\n", sgCnt/2, origCnt/2);
 	}
 };
 

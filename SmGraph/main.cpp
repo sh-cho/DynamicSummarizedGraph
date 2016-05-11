@@ -31,14 +31,27 @@ int main()
 
 
 	{
-		debug::time_bomb tb;
+		int s, t;
 		Graph* graph = readGraph(filename);
 		Graph* sm_graph = readSummarizedGraph(filename);
 
+		debug::time_bomb tb;
+		
+
 		
 		//add one edge test
-		DynamicSummarization::addEdgeAndSummarize(*sm_graph, *graph, 21, 101);
+		//DynamicSummarization::addEdgeAndSummarize(*sm_graph, *graph, 21, 101);
 
+		for (size_t i = 0; i < 1000; i++)
+		{
+			s = random::Int(0, 4000);
+			t = random::Int(0, 4000);
+			DynamicSummarization::addEdgeAndSummarize(*sm_graph, *graph, s, t);
+		}
+
+
+		//cout << "end" << endl;
+		//DynamicSummarization::countEdges(*sm_graph, *graph);
 
 
 		delete graph;
