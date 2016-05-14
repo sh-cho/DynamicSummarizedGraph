@@ -15,12 +15,14 @@ int main()
 
 
 	//edge 파일들 불러와서 벡터에 넣어두기
-	/*vector<pair<int, int>> addEdgeList;
+	/*
+	vector<pair<int, int>> addEdgeList;
 	int from, to;
 	while (fin >> from >> to)
 	{
 		addEdgeList.push_back({ from, to });
-	}*/
+	}
+	*/
 	
 
 
@@ -34,18 +36,19 @@ int main()
 		
 
 		//one edge test
-		/*s = 333;
-		t = 444;
-		DynamicSummarization::addEdgeAndSummarize(*sm_graph, *graph, s, t);*/
+		s = 2121;
+		t = 2415;
+		DynamicSummarization::addEdgeAndSummarize(*sm_graph, *graph, s, t);
 		
 
-		for (size_t i = 0; i < 1000; i++)
-		{
-			cout << i << " ";
-			s = random::Int(0, 4000);
-			t = random::Int(0, 4000);
-			DynamicSummarization::addEdgeAndSummarize(*sm_graph, *graph, s, t);
-		}
+		//for (int i = 0; i < 1000; i++)
+		//{
+		//	//cout << i << " ";
+		//	s = random::Int(0, 4000);
+		//	t = random::Int(0, 4000);
+		//	printf("i:%d, s:%d, t:%d\n", i, s, t);
+		//	DynamicSummarization::addEdgeAndSummarize(*sm_graph, *graph, s, t);
+		//}
 
 		/*for (auto edge : addEdgeList)
 		{

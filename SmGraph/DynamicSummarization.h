@@ -48,11 +48,13 @@ public:
 		//cost 계산 뒤 case 나눠서 요약
 		auto& ns1 = getNeighborNodes(sg, origin, id1);
 		auto& ns2 = getNeighborNodes(sg, origin, id2);
-		set<int> set1(ns1.begin(), ns1.end());
-		set<int> set2(ns2.begin(), ns2.end());
+		//set<int> set1(ns1.begin(), ns1.end());
+		//set<int> set2(ns2.begin(), ns2.end());
 		
 		set<int> subgraph;
 		set<int> checkedNodeList;
+		
+		set<int>::iterator set_iter;
 
 
 		//add subraph to A, A_2, B, B_2
@@ -113,7 +115,7 @@ public:
 				continue;
 			}
 
-			//printf("u:%d, v:%d\n", u, v);
+			printf("u:%d, v:%d\n", u, v);
 
 
 			//summarize check
@@ -179,16 +181,16 @@ public:
 
 
 						//Supernode U의 이웃노드 체크 해제
-						set<int>::iterator setIter;
+						//set<int>::iterator setIter;
 						auto& snNeighbor = spU->getEdges();
 						for (Edge* edge : snNeighbor)
 						{
 							int neighborID = edge->getOther(spID);
 
 							//find and erase
-							setIter = checkedNodeList.find(neighborID);
-							if (setIter != checkedNodeList.end())
-								checkedNodeList.erase(setIter);
+							set_iter = checkedNodeList.find(neighborID);
+							if (set_iter != checkedNodeList.end())
+								checkedNodeList.erase(set_iter);
 						}
 					}
 				}
@@ -204,16 +206,16 @@ public:
 					subgraph.emplace(spID);
 
 					//이웃노드 체크 해제
-					set<int>::iterator setIter;
+					//set<int>::iterator setIter;
 					auto& snNeighbor = spU->getEdges();
 					for (Edge* edge : snNeighbor)
 					{
 						int neighborID = edge->getOther(spID);
 
 						//find and erase
-						setIter = checkedNodeList.find(neighborID);
-						if (setIter != checkedNodeList.end())
-							checkedNodeList.erase(setIter);
+						set_iter = checkedNodeList.find(neighborID);
+						if (set_iter != checkedNodeList.end())
+							checkedNodeList.erase(set_iter);
 					}
 				}
 				else if (!sameParentAndId(trgNode))	//3-2. V is exist in supernode
@@ -229,22 +231,22 @@ public:
 
 
 					//이웃노드 체크 해제
-					set<int>::iterator setIter;
+					//set<int>::iterator setIter;
 					auto& snNeighbor = spV->getEdges();
 					for (Edge* edge : snNeighbor)
 					{
 						int neighborID = edge->getOther(spID);
 
 						//find and erase
-						setIter = checkedNodeList.find(neighborID);
-						if (setIter != checkedNodeList.end())
-							checkedNodeList.erase(setIter);
+						set_iter = checkedNodeList.find(neighborID);
+						if (set_iter != checkedNodeList.end())
+							checkedNodeList.erase(set_iter);
 					}
 				}
 				else //4. 일반노드
 				{
 					//make new supernode
-					SuperNode* spNew = (SuperNode*)sg.add((Node*)(new SuperNode((int)sg.getNodeCount() + 1)));
+					SuperNode* spNew = (SuperNode*)sg.add((Node*)(new SuperNode((int)sg.getNodeCount())));
 					int spID = spNew->getId();
 
 					spNew->addSummarizedNode(u);
@@ -260,16 +262,16 @@ public:
 
 
 					//이웃노드 체크 해제
-					set<int>::iterator setIter;
+					//set<int>::iterator setIter;
 					auto& snNeighbor = spNew->getEdges();
 					for (Edge* edge : snNeighbor)
 					{
 						int neighborID = edge->getOther(spID);
 
 						//find and erase
-						setIter = checkedNodeList.find(neighborID);
-						if (setIter != checkedNodeList.end())
-							checkedNodeList.erase(setIter);
+						set_iter = checkedNodeList.find(neighborID);
+						if (set_iter != checkedNodeList.end())
+							checkedNodeList.erase(set_iter);
 					}
 				}
 
@@ -280,8 +282,8 @@ public:
 			}
 			else
 			{
-				checkedNodeList.emplace(v);
 				checkedNodeList.emplace(u);
+				checkedNodeList.emplace(v);
 			}
 		} //while
 	} //dynamicSummarize
@@ -304,8 +306,8 @@ public:
 	static double getSummarizeRatio(Graph& sg, Graph& origin, int id1, int id2)
 	{
 		//return s(id1, id2)
-		auto* uNode = sg.get(id1);
-		auto* vNode = sg.get(id2);
+		//auto* uNode = sg.get(id1);
+		//auto* vNode = sg.get(id2);
 
 		auto& ns1 = getNeighborNodes(sg, origin, id1);
 		auto& ns2 = getNeighborNodes(sg, origin, id2);
