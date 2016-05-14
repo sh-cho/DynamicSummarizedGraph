@@ -46,7 +46,7 @@ Graph* readSummarizedGraph(string filename)
 		{
 			id_map[t] = s;
 			max_id = std::max<int>({ s, t, max_id });
-		}
+ 		}
 		fin.close();
 	}
 	{

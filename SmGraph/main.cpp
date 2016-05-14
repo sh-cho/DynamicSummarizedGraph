@@ -7,26 +7,18 @@
 
 int main()
 {
-	string filename = "dataset/facebook_combined.txt";
+	string filename = "dataset/facebook_combined_randomized.txt";
+	ifstream fin("dataset/facebook_combined_edges.txt");
 
-	//memory leak 체크 코드
-	/*debug::memory_bomb mb;
+
+	//edge 파일들 불러와서 벡터에 넣어두기
+	vector<pair<int, int>> addEdgeList;
+	int from, to;
+	while (fin >> from >> to)
 	{
-		Graph* graph = readGraph(filename);
-		Graph* sm_graph = readSummarizedGraph(filename);
-		delete graph;
-		delete sm_graph;
+		addEdgeList.push_back({ from, to });
 	}
-	mb.leakCheck();*/
-
-	//prev test code
-	/*int s, t;
-	for (int i = 0; i < 1000; i++)
-	{
-		s = random::Int(0, 4000);
-		t = random::Int(0, 4000);
-		DynamicSummarization::addEdge(sm_graph, graph, s, t);
-	}*/
+	
 
 
 
@@ -39,14 +31,16 @@ int main()
 		
 
 		
-		//add one edge test
-		//DynamicSummarization::addEdgeAndSummarize(*sm_graph, *graph, 21, 101);
-
-		for (size_t i = 0; i < 1000; i++)
+		/*for (size_t i = 0; i < 1000; i++)
 		{
 			s = random::Int(0, 4000);
 			t = random::Int(0, 4000);
 			DynamicSummarization::addEdgeAndSummarize(*sm_graph, *graph, s, t);
+		}*/
+
+		for (auto edge : addEdgeList)
+		{
+			DynamicSummarization::addEdgeAndSummarize(*sm_graph, *graph, edge.first, edge.second);
 		}
 
 
