@@ -50,7 +50,7 @@ int main()
 	}
 
 
-	int delEdgeNum = edgeCnt * 0.3;
+	int delEdgeNum = (int)(edgeCnt * 0.3);
 	int randIdx;
 	while (delEdgeNum > 0)
 	{

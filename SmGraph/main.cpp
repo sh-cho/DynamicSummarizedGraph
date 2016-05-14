@@ -7,41 +7,50 @@
 
 int main()
 {
-	string filename = "dataset/facebook_combined_randomized.txt";
-	ifstream fin("dataset/facebook_combined_edges.txt");
+	//string filename = "dataset/facebook_combined_randomized.txt";
+	//ifstream fin("dataset/facebook_combined_edges.txt");
+	
+	string filename = "dataset/facebook_combined.txt";
+	//ifstream fin("dataset/facebook_combined_edges.txt");
 
 
 	//edge 파일들 불러와서 벡터에 넣어두기
-	vector<pair<int, int>> addEdgeList;
+	/*vector<pair<int, int>> addEdgeList;
 	int from, to;
 	while (fin >> from >> to)
 	{
 		addEdgeList.push_back({ from, to });
-	}
+	}*/
 	
 
 
 
 	{
-		//int s, t;
+		int s, t;
 		Graph* graph = readGraph(filename);
 		Graph* sm_graph = readSummarizedGraph(filename);
 
 		debug::time_bomb tb;
 		
 
+		//one edge test
+		/*s = 333;
+		t = 444;
+		DynamicSummarization::addEdgeAndSummarize(*sm_graph, *graph, s, t);*/
 		
-		/*for (size_t i = 0; i < 1000; i++)
+
+		for (size_t i = 0; i < 1000; i++)
 		{
+			cout << i << " ";
 			s = random::Int(0, 4000);
 			t = random::Int(0, 4000);
 			DynamicSummarization::addEdgeAndSummarize(*sm_graph, *graph, s, t);
-		}*/
+		}
 
-		for (auto edge : addEdgeList)
+		/*for (auto edge : addEdgeList)
 		{
 			DynamicSummarization::addEdgeAndSummarize(*sm_graph, *graph, edge.first, edge.second);
-		}
+		}*/
 
 
 		//cout << "end" << endl;
