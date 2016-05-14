@@ -23,7 +23,7 @@ int main()
 
 
 	{
-		int s, t;
+		//int s, t;
 		Graph* graph = readGraph(filename);
 		Graph* sm_graph = readSummarizedGraph(filename);
 
