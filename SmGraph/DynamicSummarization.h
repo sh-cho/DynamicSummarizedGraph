@@ -117,7 +117,6 @@ public:
 
 
 			//summarize check
-			//result.clear();
 			if (getSummarizeRatio(sg, origin, u, v) > 0)
 			{
 				//do summarize
@@ -128,6 +127,10 @@ public:
 
 				NormalNode* srcNode = (NormalNode*)sNode;
 				NormalNode* trgNode = (NormalNode*)tNode;
+
+				SuperNode *spU, *spV;
+
+
 
 				//임시. u 또는 v가 supernode일 때
 				//checknodelist에 추가
@@ -161,8 +164,8 @@ public:
 					else //diff supernode
 					{
 						//SuperNode 합치기 -> A 기준으로 합침
-						SuperNode* spU = (SuperNode*)sg.get(srcNode->getParent());
-						SuperNode* spV = (SuperNode*)sg.get(trgNode->getParent());
+						spU = (SuperNode*)sg.get(srcNode->getParent());
+						spV = (SuperNode*)sg.get(trgNode->getParent());
 						int spID = spU->getId();
 						auto& vNodes = spV->getSummarizedNodeIds();
 						for (auto node : vNodes)
@@ -192,7 +195,7 @@ public:
 				else if (!sameParentAndId(srcNode))	//3-1. U is exist in supernode
 				{
 					//SuperNode 하나로 합치기
-					SuperNode* spU = (SuperNode*)sg.get(srcNode->getParent());
+					spU = (SuperNode*)sg.get(srcNode->getParent());
 					int spID = spU->getId();
 					spU->addSummarizedNode(trgNode->getId());
 
@@ -216,7 +219,7 @@ public:
 				else if (!sameParentAndId(trgNode))	//3-2. V is exist in supernode
 				{
 					//SuperNode 하나로 합치기
-					SuperNode* spV = (SuperNode*)sg.get(trgNode->getParent());
+					spV = (SuperNode*)sg.get(trgNode->getParent());
 					int spID = spV->getId();
 					spV->addSummarizedNode(srcNode->getId());
 

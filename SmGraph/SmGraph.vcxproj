@@ -85,6 +85,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>
+      <LinkStatus>false</LinkStatus>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -99,6 +100,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>
+      <LinkStatus>false</LinkStatus>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
@@ -116,6 +118,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>Debug</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <LinkStatus>false</LinkStatus>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -133,6 +136,7 @@
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>DebugFastLink</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
+      <LinkStatus>false</LinkStatus>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
