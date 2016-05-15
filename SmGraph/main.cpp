@@ -36,19 +36,19 @@ int main()
 		
 
 		//one edge test
-		s = 2121;
+		/*s = 2121;
 		t = 2415;
-		DynamicSummarization::addEdgeAndSummarize(*sm_graph, *graph, s, t);
+		DynamicSummarization::addEdgeAndSummarize(*sm_graph, *graph, s, t);*/
 		
 
-		//for (int i = 0; i < 1000; i++)
-		//{
-		//	//cout << i << " ";
-		//	s = random::Int(0, 4000);
-		//	t = random::Int(0, 4000);
-		//	printf("i:%d, s:%d, t:%d\n", i, s, t);
-		//	DynamicSummarization::addEdgeAndSummarize(*sm_graph, *graph, s, t);
-		//}
+		for (int i = 0; i < 1000; i++)
+		{
+			cout << i << " ";
+			s = random::Int(0, 4000);
+			t = random::Int(0, 4000);
+			//printf("i:%d, s:%d, t:%d\n", i, s, t);
+			DynamicSummarization::addEdgeAndSummarize(*sm_graph, *graph, s, t);
+		}
 
 		/*for (auto edge : addEdgeList)
 		{
