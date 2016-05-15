@@ -1,4 +1,4 @@
-#define	INPUT_NAME	"com-amazon.ungraph"	
+#define	INPUT_NAME	"com-dblp.ungraph"	
 
 #include <ctime>
 #include <iostream>
@@ -13,10 +13,9 @@ int main()
 	srand((unsigned)time(nullptr));
 
 	string inputFileName = INPUT_NAME + string(".txt");
-	string outputFileName = inputFileName;
+	string outputFileName = INPUT_NAME + string("_space.txt");
 
 	ifstream fin(inputFileName);
-	
 	if (!fin)
 	{
 		cerr << "fstream error" << endl;
@@ -42,8 +41,13 @@ int main()
 
 
 	ofstream fout(outputFileName);
+	if (!fout)
+	{
+		cerr << "fstream error" << endl;
+		exit(1);
+	}
 	cout << "* file output start" << endl;
-	for (auto edge : inEdgeList)	//randomized file 출력
+	for (auto edge : inEdgeList)	//tab to space file 출력
 	{
 		fout << edge.first << " " << edge.second << endl;
 	}

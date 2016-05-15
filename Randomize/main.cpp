@@ -1,6 +1,6 @@
 /**
- *	Graph 파일 읽어서 70%의 Edge만 남겨서 새로운 Graph 파일로 저장
- *	30%의 edge는 따로 파일로 저장
+ *	Graph 파일 읽어서 70%의 Edge만 남겨서 새로운 Graph 파일로 저장(~~~_randomized.txt)
+ *	30%의 edge는 따로 파일로 저장(~~~_edges.txt)
  *
  *	INPUT_NAME에 .txt 확장자 제외한 이름 입력
  *	파일에 주석 등이 없어야함
@@ -8,10 +8,12 @@
  *
  *	ERASE_RATE는 지울 비율 (0 ~ 1)
  *	0.01 단위까지만 지원함
+ *		-> approximate한 비율
  */
 
-#define	INPUT_NAME	"dataset/com-dblp.ungraph"	
-#define	ERASE_RATE	0.1
+#define	INPUT_NAME	"dataset/facebook_combined"	
+#define	ERASE_RATE	0.05
+
 
 #include <ctime>
 #include <iostream>
@@ -39,6 +41,12 @@ int main()
 		exit(1);
 	}
 
+	
+	if (ERASE_RATE >= 1 || ERASE_RATE <= 0)
+	{
+		cerr << "erase rate error" << endl;
+		exit(1);
+	}
 
 	cout << "* Start randomly delete " << ERASE_RATE*100 << "% edge" << endl;
 	
@@ -87,12 +95,12 @@ int main()
 	cout << "* file output start" << endl;
 	for (auto edge : inEdgeList)	//randomized file 출력
 	{
-		frand << edge.first << "\t" << edge.second << endl;
+		frand << edge.first << " " << edge.second << endl;
 	}
 
 	for (auto edge : outEdgeList)	//edge file 출력
 	{
-		fedge << edge.first << "\t" << edge.second << endl;
+		fedge << edge.first << " " << edge.second << endl;
 	}
 	cout << "* file output end" << endl;
 
