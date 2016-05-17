@@ -3,9 +3,11 @@
 #include "SummarizedStructure.hpp"
 #include "random.hpp"
 
+#include <unordered_set>
 class DynamicSummarization
 {
 public:
+
 	static auto getNeighborNodes(Graph& sg, Graph& original, int id)
 	{
 		auto* np = sg.get(id);
@@ -13,9 +15,11 @@ public:
 		if ((unsigned)id < original.getNodeCount())
 		{
 			NormalNode* npp = (NormalNode*)original.get(id);
-			auto& edges = npp->getEdges();
-			for (Edge* e : edges)
-				neighbors.emplace_back(e->getTarget());
+			const auto& edges = npp->getEdges();
+			neighbors.resize(edges.size());
+			const auto size = edges.size();
+			for (register int i = 0; i < size; ++i)
+				neighbors[i] = edges[i]->getTarget();
 		}
 		else
 		{
@@ -25,11 +29,12 @@ public:
 			{
 				Node* p = original.get(sid);
 				auto& edges = p->getEdges();
-				for (auto* e : edges)
+				neighbors.reserve(neighbors.size() + edges.size());
+				for (auto*& e : edges)
 					neighbors.emplace_back(e->getTarget());
 			}
 		}
-		return neighbors;
+		return move(neighbors);
 	}
 
 	static int getParent(Node* p)
@@ -302,10 +307,10 @@ public:
 		Node *sNode, *tNode;
 		NormalNode *snNode, *tnNode;
 		
-		set<int> checked;
-		set<int> summarizedNodes;
-		set<int> twohops;
-		set<int>::iterator set_iter;
+		unordered_set<int> checked;
+		unordered_set<int> summarizedNodes;
+		unordered_set<int> twohops;
+		unordered_set<int>::iterator set_iter;
 
 		int u;
 
@@ -567,16 +572,54 @@ public:
 
 	static double getSummarizeRatio(Graph& sg, Graph& origin, int id1, int id2)
 	{
-		auto& ns1 = getNeighborNodes(sg, origin, id1);
-		auto& ns2 = getNeighborNodes(sg, origin, id2);
-		set<int> set1(ns1.begin(), ns1.end());
-		set<int> set2(ns2.begin(), ns2.end());
-		vector<int> interSection;
-		set_intersection(set1.begin(), set1.end(), set2.begin(), set2.end(), std::back_inserter(interSection));
+		//set -> 배열로 바꿈
 
-		int c_w = (int)set1.size() + (int)set2.size() - (int)interSection.size();
-		//cout << "ratio: " << (double)(set1.size() + set2.size() - c_w) / (set1.size() + set2.size()) << endl;
-		return (double)(set1.size() + set2.size() - c_w) / (set1.size() + set2.size());
+		int size1,
+			size2,	//1, 2의 크기
+			sizeInter = 0;	//교집합 크기
+		int i = 0, j = 0;	//index
+
+		vector<int>& ns1 = getNeighborNodes(sg, origin, id1);
+		vector<int>& ns2 = getNeighborNodes(sg, origin, id2);
+
+		std::sort(ns1.begin(), ns1.end());
+		std::sort(ns2.begin(), ns2.end());
+
+		size1 = ns1.size();
+		size2 = ns2.size();
+
+
+		//vector 두개 index를 이용해 교집합 크기 구함
+		while (i < size1 && j < size2)
+		{
+			if (ns1[i] == ns2[j])
+			{
+				++sizeInter;
+				++i;
+				++j;
+			}
+			else if (ns1[i] > ns2[j])
+			{
+				++j;
+			}
+			else
+			{
+				++i;
+			}
+		}
+
+
+		//set<int> set1(ns1.begin(), ns1.end());
+		//set<int> set2(ns2.begin(), ns2.end());
+		//vector<int> interSection;
+		//set_intersection(set1.begin(), set1.end(), set2.begin(), set2.end(), std::back_inserter(interSection));
+
+		//int c_w = (int)set1.size() + (int)set2.size() - (int)interSection.size();
+		////cout << "ratio: " << (double)(set1.size() + set2.size() - c_w) / (set1.size() + set2.size()) << endl;
+		//return (double)(set1.size() + set2.size() - c_w) / (set1.size() + set2.size());
+
+		//
+		return (double)(sizeInter) / (size1 + size2);
 	}
 
 	//static int getRandomNodeInSubgraph(Graph& sg, Graph& origin, set<int> subgraph, int u = -1)

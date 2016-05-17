@@ -11,10 +11,11 @@
  *		-> approximate한 비율
  */
 
-#define	INPUT_NAME	"dataset/facebook_combined"	
-#define	ERASE_RATE	0.05
+#define	INPUT_NAME	"dataset/facebook_combined"
+#define	ERASE_RATE	0.2
 
 
+#include <algorithm>
 #include <ctime>
 #include <iostream>
 #include <fstream>
@@ -23,13 +24,17 @@
 #include <vector>
 using namespace std;
 
+
+int myrandom(int i) { return std::rand() % i; }
+
 int main()
 {
 	srand((unsigned)time(nullptr));
 
 	string inputFileName = INPUT_NAME + string(".txt");
-	string randomizedFileName = inputFileName.substr(0, inputFileName.find_last_of('.')) + "_randomized.txt";	//->randomly delete
-	string edgesFileName = inputFileName.substr(0, inputFileName.find_last_of('.')) + "_edges.txt";
+	//string inputFileName = INPUT_NAME + string(".txt.txr");	//txr version
+	string randomizedFileName = inputFileName.substr(0, inputFileName.find_last_of('.')) + "_randomized20p.txt";	//->randomly delete
+	string edgesFileName = inputFileName.substr(0, inputFileName.find_last_of('.')) + "_edges20p.txt";
 
 	
 	ifstream fin(inputFileName);
@@ -98,6 +103,8 @@ int main()
 		frand << edge.first << " " << edge.second << endl;
 	}
 
+	//edge random shuffle 후 출력
+	std::random_shuffle(outEdgeList.begin(), outEdgeList.end(), myrandom);
 	for (auto edge : outEdgeList)	//edge file 출력
 	{
 		fedge << edge.first << " " << edge.second << endl;

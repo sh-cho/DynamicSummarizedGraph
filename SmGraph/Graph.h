@@ -18,8 +18,8 @@ public:
 	virtual ~Edge() {}
 
 public:
-	auto getSource() { return nodes[0]; }
-	auto getTarget() { return nodes[1]; }
+	const auto& getSource() { return nodes[0]; }
+	const auto& getTarget() { return nodes[1]; }
 	auto getNodes() { return nodes; }
 	int getOther(int one);
 
