@@ -42,8 +42,18 @@ public:
 	auto addEdge(Edge* edge) { edges.emplace_back(edge); }
 	auto& getEdges() { return edges; }
 	auto getId() { return id; }
-	virtual int getType() { return 0; };
+	virtual int getType() { return 0; }
+	bool hasEdge(int id1, int id2)
+	{
+		for (auto edge : edges)
+		{
+			int src = edge->getSource(), trg = edge->getTarget();
+			if ((src == id1 && trg == id2) || (trg == id1 && src == id2))
+				return true;
+		}
 
+		return false;
+	}
 
 protected:
 	int id;
