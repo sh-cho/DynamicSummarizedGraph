@@ -14,14 +14,14 @@
 
 int main()
 {
-	//string filename = "dataset/com-amazon.ungraph.txt_randomized10p.txt";
-	//ifstream fin("dataset/com-amazon.ungraph.txt_edges10p.txt");
+	//string filename = "dataset/com-amazon.ungraph.txt_randomized20p.txt";
+	//ifstream fin("dataset/com-amazon.ungraph.txt_edges20p.txt");
 
 	//string filename = "dataset/com-dblp.ungraph.txt_randomized10p.txt";
 	//ifstream fin("dataset/com-dblp.ungraph.txt_edges10p.txt");
 	
-	//string filename = "dataset/Gowalla.txt_randomized25p.txt";
-	//ifstream fin("dataset/Gowalla.txt_edges25p.txt");
+	///string filename = "dataset/Gowalla.txt_randomized20p.txt";
+	///ifstream fin("dataset/Gowalla.txt_edges20p.txt");
 
 	string filename = "dataset/facebook_combined_randomized30p.txt";
 	ifstream fin("dataset/facebook_combined_edges30p.txt");
