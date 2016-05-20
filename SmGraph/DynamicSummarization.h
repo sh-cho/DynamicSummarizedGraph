@@ -3,14 +3,12 @@
 #include "SummarizedStructure.hpp"
 #include "random.hpp"
 
-#include <unordered_set>
 class DynamicSummarization
 {
 public:
-
 	static auto getNeighborNodes(Graph& sg, Graph& original, int id)
 	{
-		auto* np = sg.get(id);
+		//auto* np = sg.get(id);
 		vector<int> neighbors;
 		if ((unsigned)id < original.getNodeCount())
 		{
@@ -48,256 +46,6 @@ public:
 		return !(np1->getParent() == np1->getId());
 	}
 
-	//static void dynamicSummarize(Graph& sg, Graph& origin, int id1, int id2)
-	//{
-	//	//cost 계산 뒤 case 나눠서 요약
-	//	auto& ns1 = getNeighborNodes(sg, origin, id1);
-	//	auto& ns2 = getNeighborNodes(sg, origin, id2);
-	//	//set<int> set1(ns1.begin(), ns1.end());
-	//	//set<int> set2(ns2.begin(), ns2.end());
-	//	
-	//	set<int> subgraph;
-	//	set<int> checkedNodeList;
-	//	
-	//	set<int>::iterator set_iter;
-	//
-	//
-	//	bool noUExist, noU2Exist;
-	//
-	//
-	//	//add subraph to A, A_2, B, B_2
-	//	subgraph.emplace(id1);
-	//	for (int nodeID : ns1)
-	//		subgraph.emplace(nodeID);
-	//	subgraph.emplace(id2);
-	//	for (int nodeID : ns2)
-	//		subgraph.emplace(nodeID);
-	//
-	//
-	//	vector<Edge*> *snNeighbor = nullptr;
-	//	Node *sNode, *tNode;
-	//	NormalNode *srcNode, *trgNode;
-	//	SuperNode *spU, *spV;
-	//
-	//	//전부 check될 때까지 반복
-	//	while (subgraph.size() > checkedNodeList.size())
-	//	{
-	//		//get u, v
-	//		int u, v;
-	//		auto enditer = checkedNodeList.end();
-	//		
-	//		noUExist = false;
-	//		noU2Exist = false;
-	//		
-	//
-	//		//subgraph 안의 임의의 u, v를 get
-	//		//u나 v가 checkNodeList에 있으면 다시 u, v를 받아옴
-	//		do {
-	//			u = getRandomNodeInSubgraph(sg, origin, subgraph);	//any unchecked node in subgraph
-	//			v = getRandomNodeInSubgraph(sg, origin, subgraph, u);	//any unchecked U2 in subraph
-	//
-	//
-	//			//debug
-	//			//printf("u:%d, v:%d\n", u, v);
-	//
-	//
-	//			if (u == -1)
-	//			{
-	//				noUExist = false;
-	//				break;
-	//			}
-	//			else if (v == -1)	//v is not exist
-	//			{
-	//				noU2Exist = true;
-	//				break;
-	//			}
-	//			else if (u == v)
-	//			{
-	//				continue;
-	//			}
-	//		} while (checkedNodeList.find(u)!=enditer
-	//			&& checkedNodeList.find(v)!=enditer);
-	//
-	//		//u or v is not exist
-	//		//if v is not exist -> check u
-	//		if (noUExist)
-	//		{
-	//			continue;
-	//		}
-	//		else if (noU2Exist)
-	//		{
-	//			checkedNodeList.emplace(u);
-	//			continue;
-	//		}
-	//
-	//		//printf("u:%d, v:%d\n", u, v);
-	//		
-	//		sNode = sg.get(u);
-	//		tNode = sg.get(v);
-	//		srcNode = (NormalNode*)sNode;
-	//		trgNode = (NormalNode*)tNode;
-	//
-	//		//임시. u 또는 v가 supernode일 때
-	//		//checknodelist에 추가
-	//		if (srcNode->getType() == SUPER_NODE)
-	//		{
-	//			checkedNodeList.emplace(u);
-	//			continue;
-	//		}
-	//		else if (trgNode->getType() == SUPER_NODE)
-	//		{
-	//			checkedNodeList.emplace(v);
-	//			continue;
-	//		}
-	//
-	//
-	//		//summarize check
-	//		if (getSummarizeRatio(sg, origin, u, v) > 0)
-	//		{
-	//			//do summarize
-	//			//1. in same supernode
-	//			//2. in different supernode
-	//			//3. supernode - normalnode
-	//			//4. normalnode
-	//			if (isSummarizedNode(srcNode) && isSummarizedNode(trgNode))	//1, 2
-	//			{
-	//				//이미 요약이 되어있기 때문에 checkedNodeList에 추가
-	//				if (srcNode->getParent() == trgNode->getParent()) //in same supernode
-	//				{
-	//					//check v
-	//					checkedNodeList.emplace(v);
-	//					continue;
-	//				}
-	//				else //diff supernode
-	//				{
-	//					//SuperNode 합치기 -> A 기준으로 합침
-	//					spU = (SuperNode*)sg.get(srcNode->getParent());
-	//					spV = (SuperNode*)sg.get(trgNode->getParent());
-	//					int spID = spU->getId();
-	//					auto& vNodes = spV->getSummarizedNodeIds();
-	//					for (auto node : vNodes)
-	//					{
-	//						spU->addSummarizedNode(node);
-	//						((NormalNode*)sg.get(node))->setParent(spID);
-	//					}
-	//
-	//
-	//					//spV delete
-	//					
-	//					
-	//
-	//					//add new Supernode in subgraph
-	//					subgraph.emplace(spID);
-	//
-	//
-	//					//Supernode U의 이웃노드 체크 해제
-	//					snNeighbor = &spU->getEdges();
-	//					for (Edge* edge : *snNeighbor)
-	//					{
-	//						int neighborID = edge->getOther(spID);
-	//
-	//						//find and erase
-	//						set_iter = checkedNodeList.find(neighborID);
-	//						if (set_iter != checkedNodeList.end())
-	//							checkedNodeList.erase(set_iter);
-	//					}
-	//				}
-	//			}
-	//			else if (isSummarizedNode(srcNode))	//3-1. U is exist in supernode
-	//			{
-	//				//SuperNode 하나로 합치기
-	//				spU = (SuperNode*)sg.get(srcNode->getParent());
-	//				int spID = spU->getId();
-	//				spU->addSummarizedNode(trgNode->getId());
-	//				trgNode->setParent(spID);
-	//
-	//
-	//				//add new Supernode in subgraph
-	//				subgraph.emplace(spID);
-	//
-	//				//이웃노드 체크 해제
-	//				snNeighbor = &spU->getEdges();
-	//				for (Edge* edge : *snNeighbor)
-	//				{
-	//					int neighborID = edge->getOther(spID);
-	//
-	//					//find and erase
-	//					set_iter = checkedNodeList.find(neighborID);
-	//					if (set_iter != checkedNodeList.end())
-	//						checkedNodeList.erase(set_iter);
-	//				}
-	//			}
-	//			else if (isSummarizedNode(trgNode))	//3-2. V is exist in supernode
-	//			{
-	//				//SuperNode 하나로 합치기
-	//				spV = (SuperNode*)sg.get(trgNode->getParent());
-	//				int spID = spV->getId();
-	//				spV->addSummarizedNode(srcNode->getId());
-	//				srcNode->setParent(spID);
-	//
-	//
-	//				//add new Supernode in subgraph
-	//				subgraph.emplace(spID);
-	//
-	//
-	//				//이웃노드 체크 해제
-	//				snNeighbor = &spV->getEdges();
-	//				for (Edge* edge : *snNeighbor)
-	//				{
-	//					int neighborID = edge->getOther(spID);
-	//
-	//					//find and erase
-	//					set_iter = checkedNodeList.find(neighborID);
-	//					if (set_iter != checkedNodeList.end())
-	//						checkedNodeList.erase(set_iter);
-	//				}
-	//			}
-	//			else //4. 일반노드
-	//			{
-	//				//make new supernode
-	//				SuperNode* spNew = (SuperNode*)sg.add((Node*)(new SuperNode((int)sg.getNodeCount())));
-	//				int spID = spNew->getId();
-	//
-	//				spNew->addSummarizedNode(u);
-	//				spNew->addSummarizedNode(v);	//superNode 추가 뒤 노드 추가
-	//				srcNode->setParent(spID);
-	//				trgNode->setParent(spID);
-	//				
-	//				
-	//				
-	//
-	//				//add new Supernode in subgraph
-	//				subgraph.emplace(spID);
-	//
-	//
-	//				//이웃노드 체크 해제
-	//				snNeighbor = &spNew->getEdges();
-	//				for (Edge* edge : *snNeighbor)
-	//				{
-	//					int neighborID = edge->getOther(spID);
-	//
-	//					//find and erase
-	//					set_iter = checkedNodeList.find(neighborID);
-	//					if (set_iter != checkedNodeList.end())
-	//						checkedNodeList.erase(set_iter);
-	//				}
-	//			}
-	//
-	//
-	//
-	//		}
-	//		else
-	//		{
-	//			//correction table에 추가
-	//			srcNode->addCorrectionTarget('+', v);
-	//			trgNode->addCorrectionTarget('+', u);
-	//
-	//			checkedNodeList.emplace(u);
-	//			checkedNodeList.emplace(v);
-	//		}
-	//	} //while
-	//} //dynamicSummarize
-
 	static void checkNormalNode(Graph& sg, Graph& origin, int src, int trg, double threshold)
 	{
 		//일반노드 두개 요약
@@ -314,7 +62,7 @@ public:
 
 		int u;
 
-
+		//////////////////////////////////////////////////////////////////
 		//1. source --- source's 2-hop node
 		set_iter = twohops.begin();
 		copy(tNbrs.begin(), tNbrs.end(), inserter(twohops, set_iter));	//twohops에 target node의 neighbor 복사
@@ -483,10 +231,6 @@ public:
 
 	static void addEdgeAndSummarize(Graph& sg, Graph& origin, int src, int trg, double threshold)
 	{
-		//double threshold = 0.7;
-
-		//add edge
-		//sg.add(new Edge(src, trg));
 		auto* sNode = sg.get(src);
 		auto* tNode = sg.get(trg);
 		int sType = sNode->getType(),
@@ -505,13 +249,13 @@ public:
 			{
 				checkNormalNode(sg, origin, src, trg, threshold);
 			}
-			else //different supernode
+			else
 			{
 				auto& ns1 = getNeighborNodes(sg, origin, src);
 				auto& ns2 = getNeighborNodes(sg, origin, trg);
 				int total = ns1.size() + ns2.size();
-				set<int> set1(ns1.begin(), ns1.end());
-				set<int> set2(ns2.begin(), ns2.end());
+				unordered_set<int> set1(ns1.begin(), ns1.end());
+				unordered_set<int> set2(ns2.begin(), ns2.end());
 				vector<int> result;
 
 
@@ -524,13 +268,6 @@ public:
 
 					if (isSummarizedNode(snNode) && isSummarizedNode(tnNode))	//각자 다른 슈퍼노드에 속한 경우
 					{
-						//-, + 교정 갯수 세서 케이스 나누기
-						//if C+ > C-
-						//	;
-						//else
-						//	;
-						
-
 						result.clear();
 						set_difference(set1.begin(), set1.end(), set2.begin(), set2.end(), std::back_inserter(result));
 						for (int id : result) {
@@ -567,6 +304,139 @@ public:
 					tnNode->addCorrectionTarget('+', src);
 				}
 			}
+
+
+			//else
+			//{
+			//	auto& ns1 = getNeighborNodes(sg, origin, src);
+			//	auto& ns2 = getNeighborNodes(sg, origin, trg);
+			//	int total = (int)ns1.size() + (int)ns2.size();
+			//	unordered_set<int> set1(ns1.begin(), ns1.end());
+			//	unordered_set<int> set2(ns2.begin(), ns2.end());
+			//	vector<int> result;
+			//	if (getSummarizeRatio(sg, origin, src, trg) > threshold)
+			//	{
+			//		SuperNode *ssNode = (SuperNode*)snNode,
+			//				*stNode = (SuperNode*)tnNode;
+			//		auto& sinNode = ssNode->getSummarizedNodeIds();
+			//		auto& tinNode = stNode->getSummarizedNodeIds();
+			//		if (isSummarizedNode(snNode) && isSummarizedNode(tnNode))	//서로 다른 슈퍼노드 안에 있을 경우
+			//		{
+			//			int c_plus = 0, c_minus;
+			//			vector<Edge> inexistEdges;	//슈퍼노드 사이에 존재하지 않는 에지들
+			//			//check c+
+			//			for (auto sNodeID : sinNode)
+			//			{
+			//				auto inNode = sg.get(sNodeID);
+			//				for (auto tNodeID : tinNode)
+			//				{
+			//					if (!inNode->hasEdge(sNodeID, tNodeID))
+			//					{
+			//						++c_plus;
+			//						inexistEdges.push_back(Edge(sNodeID, tNodeID));
+			//					}
+			//				}
+			//			}
+			//			//check c-
+			//			c_minus = ((int)sinNode.size() + (int)tinNode.size()) - c_plus;
+			//			if (c_plus > c_minus) //if C+ > C-
+			//			{
+			//				//add (+) correction e(n1, n2)
+			//				snNode->addCorrectionTarget('+', trg);
+			//				tnNode->addCorrectionTarget('+', src);
+			//			}
+			//			else // C+ <= C-
+			//			{
+			//				//insert a super edge e(s1, s2) into G
+			//				//and add (-) corrections
+			//				sg.add(new Edge(ssNode->getId(), stNode->getId()));
+			//				for (auto& edge : inexistEdges)
+			//				{
+			//					int srcid = edge.getSource(),
+			//						trgid = edge.getTarget();
+			//					auto sCorrNode = sg.get(srcid);
+			//					auto tCorrNode = sg.get(trgid);
+			//					((NormalNode*)sCorrNode)->addCorrectionTarget('-', trgid);
+			//					((NormalNode*)tCorrNode)->addCorrectionTarget('-', srcid);
+			//				}
+			//			}
+			//		}
+			//		else if (isSummarizedNode(snNode))	//슈퍼노드(source) --- 일반노드(target)
+			//		{
+			//			int c_plus = 0, c_minus;
+			//			vector<Edge> inexistEdges;	//슈퍼노드 사이에 존재하지 않는 에지들
+			//			//calc c_plus
+			//			for (auto sNodeID : sinNode)
+			//			{
+			//				if (!tnNode->hasEdge(sNodeID, trg))
+			//				{
+			//					++c_plus;
+			//					inexistEdges.push_back(Edge(sNodeID, trg));
+			//				}
+			//			}
+			//			c_minus = ((int)sinNode.size() + (int)tinNode.size()) - c_plus;
+			//			if (c_plus > c_minus)
+			//			{
+			//				//add (+) correction e(n1, n2)
+			//				snNode->addCorrectionTarget('+', trg);
+			//				tnNode->addCorrectionTarget('+', src);
+			//			}
+			//			else //C+ <= C-
+			//			{
+			//				sg.add(new Edge(ssNode->getId(), trg));
+			//				for (auto& edge : inexistEdges)
+			//				{
+			//					int srcid = edge.getSource(),
+			//						trgid = edge.getTarget();
+			//					auto sCorrNode = sg.get(srcid);
+			//					auto tCorrNode = sg.get(trgid);
+			//					((NormalNode*)sCorrNode)->addCorrectionTarget('-', trgid);
+			//					((NormalNode*)tCorrNode)->addCorrectionTarget('-', srcid);
+			//				}
+			//			}
+			//		}
+			//		else if (isSummarizedNode(tnNode))	//일반노드(source) --- 슈퍼노드(target)
+			//		{
+			//			int c_plus = 0, c_minus;
+			//			vector<Edge> inexistEdges;	//슈퍼노드 사이에 존재하지 않는 에지들
+			//										//calc c_plus
+			//			for (auto tNodeID : tinNode)
+			//			{
+			//				if (!tnNode->hasEdge(tNodeID, src))
+			//				{
+			//					++c_plus;
+			//					inexistEdges.push_back(Edge(tNodeID, src));
+			//				}
+			//			}
+			//			c_minus = ((int)sinNode.size() + (int)tinNode.size()) - c_plus;
+			//			if (c_plus > c_minus)
+			//			{
+			//				//add (+) correction e(n1, n2)
+			//				snNode->addCorrectionTarget('+', trg);
+			//				tnNode->addCorrectionTarget('+', src);
+			//			}
+			//			else //C+ <= C-
+			//			{
+			//				sg.add(new Edge(stNode->getId(), src));
+			//				for (auto& edge : inexistEdges)
+			//				{
+			//					int srcid = edge.getSource(),
+			//						trgid = edge.getTarget();
+			//					auto sCorrNode = sg.get(srcid);
+			//					auto tCorrNode = sg.get(trgid);
+			//					((NormalNode*)sCorrNode)->addCorrectionTarget('-', trgid);
+			//					((NormalNode*)tCorrNode)->addCorrectionTarget('-', srcid);
+			//				}
+			//			}
+			//		}
+			//	}
+			//	else //요약 안되는 경우
+			//	{
+			//		//add + correction
+			//		snNode->addCorrectionTarget('+', trg);
+			//		tnNode->addCorrectionTarget('+', src);
+			//	}
+			//}
 		}
 	}
 
@@ -585,8 +455,8 @@ public:
 		std::sort(ns1.begin(), ns1.end());
 		std::sort(ns2.begin(), ns2.end());
 
-		size1 = ns1.size();
-		size2 = ns2.size();
+		size1 = (int)ns1.size();
+		size2 = (int)ns2.size();
 
 
 		//vector 두개 index를 이용해 교집합 크기 구함

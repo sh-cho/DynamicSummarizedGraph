@@ -14,30 +14,32 @@
 
 int main()
 {
-	//when load randomized data
-	//string filename = "dataset/facebook_combined_randomized20p.txt";
-	//ifstream fin("dataset/facebook_combined_edges20p.txt");
+	//string filename = "dataset/com-amazon.ungraph.txt_randomized10p.txt";
+	//ifstream fin("dataset/com-amazon.ungraph.txt_edges10p.txt");
 
 	//string filename = "dataset/com-dblp.ungraph.txt_randomized10p.txt";
 	//ifstream fin("dataset/com-dblp.ungraph.txt_edges10p.txt");
 	
-	//string filename = "dataset/com-amazon.ungraph.txt_randomized10p.txt";
-	//ifstream fin("dataset/com-amazon.ungraph.txt_edges10p.txt");
-	
-	string filename = "dataset/Gowalla.txt_randomized20p.txt";
-	ifstream fin("dataset/Gowalla.txt_edges20p.txt");
+	string filename = "dataset/Gowalla.txt_randomized15p.txt";
+	ifstream fin("dataset/Gowalla.txt_edges15p.txt");
+
+	//string filename = "dataset/facebook_combined_randomized30p.txt";
+	//ifstream fin("dataset/facebook_combined_edges30p.txt");
+
 	vector<pair<int, int>> addEdgeList;	//edge 파일들 불러와서 벡터에 넣어두기
 	int from, to;
 	if (!fin)
 	{
-		cerr << "fstream error" << endl;
+		cerr << "edge file error" << endl;
 		exit(1);
 	}
 
+	cout << "* edge file load start" << endl;
 	while (fin >> from >> to)
 	{
 		addEdgeList.push_back({ from, to });
 	}
+	cout << "* edge file load end" << endl;
 	
 
 	//when load orig data
@@ -47,7 +49,9 @@ int main()
 
 	double threshold = 0.4;
 	//int cnt = 0;
-	cout << "start" << endl;
+	cout << "* dynamic summarization start" << endl;
+	cout << "* filename: " << filename << endl;
+	cout << "* threshold: " << threshold << endl;
 	{
 		Graph* graph = readGraph(filename);
 		Graph* sm_graph = readSummarizedGraph(filename);
