@@ -1,7 +1,7 @@
 #pragma once
 #include "Graph.h"
 #include "SummarizedStructure.hpp"
-#include "random.hpp"
+//#include "random.hpp"
 
 class DynamicSummarization
 {
@@ -78,6 +78,10 @@ public:
 					if (getSummarizeRatio(sg, origin, u, twohopNode) > threshold)
 					{
 						//슈퍼노드로 요약
+						//1. u가 superNode 안에 있을 경우 -> twohopNode를 u 안에 넣기
+						//2. 이외의 경우 -> 새 슈퍼노드 만들기
+
+						//2.
 						SuperNode* spNew = (SuperNode*)sg.add((Node*)(new SuperNode((int)sg.getNodeCount())));
 						int spID = spNew->getId();
 
