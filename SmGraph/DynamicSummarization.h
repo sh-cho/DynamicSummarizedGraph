@@ -55,10 +55,12 @@ public:
 		Node *sNode, *tNode;
 		NormalNode *snNode, *tnNode;
 		
-		unordered_set<int> checked;
-		unordered_set<int> summarizedNodes;
+		//unordered_set<int> checked;
+		vector<int> summarizedNodes;
 		unordered_set<int> twohops;
 		unordered_set<int>::iterator set_iter;
+		
+		vector<int> checked;
 
 		int u;
 
@@ -66,12 +68,13 @@ public:
 		//1. source --- source's 2-hop node
 		set_iter = twohops.begin();
 		copy(tNbrs.begin(), tNbrs.end(), inserter(twohops, set_iter));	//twohops에 target node의 neighbor 복사
+		
 		u = src;
 		while (1)
 		{
 			for (auto twohopNode : twohops)
 			{
-				if (checked.find(twohopNode) == checked.end())	//not found in checked list
+				if (find(checked.begin(), checked.end(), twohopNode) == checked.end())	//not found in checked list
 				{
 					//check cost
 					//threshold와 비교
@@ -114,18 +117,26 @@ public:
 						auto& suNbrs = getNeighborNodes(sg, origin, twohopNode);
 						for (auto neighbor : suNbrs)
 						{
-							if (checked.find(neighbor) == checked.end() && u != neighbor)	//not found
+							if (find(checked.begin(), checked.end(), neighbor) == checked.end() && u != neighbor)	//not found
 							{
 								twohops.emplace(neighbor);
 							}
 						}
 
-						summarizedNodes.emplace(twohopNode);
+						
+						//if not found on vector
+						if (std::find(summarizedNodes.begin(), summarizedNodes.end(), twohopNode) == summarizedNodes.end())
+						{
+							summarizedNodes.push_back(twohopNode);
+						}
 					}
 					else
 					{
 						//check
-						checked.emplace(twohopNode);
+						if (find(checked.begin(), checked.end(), twohopNode) == checked.end())
+						{
+							checked.push_back(twohopNode);
+						}
 					}
 				}
 			}
@@ -133,21 +144,22 @@ public:
 
 			if (summarizedNodes.size() != 0)
 			{
-				checked.emplace(u);
+				if (find(checked.begin(), checked.end(), u) == checked.end())
+				{
+					checked.push_back(u);
+				}
 
 				//u 변경
 				//summarized에서 하나 빼서 사용
-				set_iter = summarizedNodes.begin();
-				advance(set_iter, 0);
-				u = (*set_iter);
-				summarizedNodes.erase(set_iter);
+				u = summarizedNodes.back();
+				summarizedNodes.pop_back();
 
 				auto& newNbrs = getNeighborNodes(sg, origin, u);
 				twohops.clear();
 
 				for (auto twohop : newNbrs)
 				{
-					if (checked.find(twohop) == checked.end() && u != twohop)	//not found
+					if (find(checked.begin(), checked.end(), twohop) == checked.end() && u != twohop)	//not found
 					{
 						twohops.emplace(twohop);
 					}
@@ -173,7 +185,7 @@ public:
 		{
 			for (auto twohopNode : twohops)
 			{
-				if (checked.find(twohopNode) == checked.end())	//not found in checked list
+				if (find(checked.begin(), checked.end(), twohopNode) == checked.end())	//not found in checked list
 				{
 					//check cost
 					//threshold와 비교
@@ -214,18 +226,25 @@ public:
 						auto& suNbrs = getNeighborNodes(sg, origin, twohopNode);
 						for (auto neighbor : suNbrs)
 						{
-							if (checked.find(neighbor) == checked.end() && u != neighbor)	//not found
+							if (find(checked.begin(), checked.end(), neighbor) == checked.end() && u != neighbor)	//not found
 							{
 								twohops.emplace(neighbor);
 							}
 						}
 
-						summarizedNodes.emplace(twohopNode);
+						//if not found on vector
+						if (std::find(summarizedNodes.begin(), summarizedNodes.end(), twohopNode) == summarizedNodes.end())
+						{
+							summarizedNodes.push_back(twohopNode);
+						}
 					}
 					else
 					{
 						//check
-						checked.emplace(twohopNode);
+						if (find(checked.begin(), checked.end(), twohopNode) == checked.end())
+						{
+							checked.push_back(twohopNode);
+						}
 					}
 				}
 			}
@@ -233,20 +252,22 @@ public:
 
 			if (summarizedNodes.size() != 0)
 			{
-				checked.emplace(u);
+				if (find(checked.begin(), checked.end(), u) == checked.end())
+				{
+					checked.push_back(u);
+				}
+
 				//u 변경
 				//summarized에서 하나 빼서 사용
-				set_iter = summarizedNodes.begin();
-				advance(set_iter, 0);
-				u = (*set_iter);
-				summarizedNodes.erase(set_iter);
+				u = summarizedNodes.back();
+				summarizedNodes.pop_back();
 
 				auto& newNbrs = getNeighborNodes(sg, origin, u);
 				twohops.clear();
 
 				for (auto twohop : newNbrs)
 				{
-					if (checked.find(twohop) == checked.end() && u != twohop)	//not found
+					if (find(checked.begin(), checked.end(), twohop) == checked.end() && u != twohop)	//not found
 					{
 						twohops.emplace(twohop);
 					}
