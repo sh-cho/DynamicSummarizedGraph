@@ -77,23 +77,35 @@ public:
 					//threshold와 비교
 					if (getSummarizeRatio(sg, origin, u, twohopNode) > threshold)
 					{
-						//슈퍼노드로 요약
-						//1. u가 superNode 안에 있을 경우 -> twohopNode를 u 안에 넣기
-						//2. 이외의 경우 -> 새 슈퍼노드 만들기
-
-						//2.
-						SuperNode* spNew = (SuperNode*)sg.add((Node*)(new SuperNode((int)sg.getNodeCount())));
-						int spID = spNew->getId();
-
 						sNode = sg.get(u);
 						tNode = sg.get(twohopNode);
 						snNode = (NormalNode*)sNode;
 						tnNode = (NormalNode*)tNode;
+						
+						
+						//슈퍼노드로 요약
+						//1. u가 superNode 안에 있을 경우 -> twohopNode를 u 안에 넣기
+						//2. 이외의 경우 -> 새 슈퍼노드 만들기
+						if (isSummarizedNode(snNode)) //1.
+						{
+							SuperNode* spU = (SuperNode*)sg.get(snNode->getParent());
+							int spID = spU->getId();
 
-						spNew->addSummarizedNode(u);
-						spNew->addSummarizedNode(twohopNode);
-						snNode->setParent(spID);
-						tnNode->setParent(spID);
+							spU->addSummarizedNode(twohopNode);
+							tnNode->setParent(spID);
+						}
+						else //2.
+						{
+							SuperNode* spNew = (SuperNode*)sg.add((Node*)(new SuperNode((int)sg.getNodeCount())));
+							int spID = spNew->getId();
+
+							spNew->addSummarizedNode(u);
+							spNew->addSummarizedNode(twohopNode);
+							snNode->setParent(spID);
+							tnNode->setParent(spID);
+						}
+
+
 
 						//printf("u:%d, v:%d\n", u, twohopNode);
 
@@ -167,19 +179,33 @@ public:
 					//threshold와 비교
 					if (getSummarizeRatio(sg, origin, u, twohopNode) > threshold)
 					{
-						//슈퍼노드로 요약
-						SuperNode* spNew = (SuperNode*)sg.add((Node*)(new SuperNode((int)sg.getNodeCount())));
-						int spID = spNew->getId();
-
 						sNode = sg.get(u);
 						tNode = sg.get(twohopNode);
 						snNode = (NormalNode*)sNode;
 						tnNode = (NormalNode*)tNode;
 
-						spNew->addSummarizedNode(u);
-						spNew->addSummarizedNode(twohopNode);
-						snNode->setParent(spID);
-						tnNode->setParent(spID);
+
+						//슈퍼노드로 요약
+						//1. u가 superNode 안에 있을 경우 -> twohopNode를 u 안에 넣기
+						//2. 이외의 경우 -> 새 슈퍼노드 만들기
+						if (isSummarizedNode(snNode)) //1.
+						{
+							SuperNode* spU = (SuperNode*)sg.get(snNode->getParent());
+							int spID = spU->getId();
+
+							spU->addSummarizedNode(twohopNode);
+							tnNode->setParent(spID);
+						}
+						else //2.
+						{
+							SuperNode* spNew = (SuperNode*)sg.add((Node*)(new SuperNode((int)sg.getNodeCount())));
+							int spID = spNew->getId();
+
+							spNew->addSummarizedNode(u);
+							spNew->addSummarizedNode(twohopNode);
+							snNode->setParent(spID);
+							tnNode->setParent(spID);
+						}
 
 						//printf("u:%d, v:%d\n", u, twohopNode);
 

@@ -5,7 +5,7 @@
 #include "GraphLoader.hpp"
 #include "DynamicSummarization.h"
 #include "Experiment.hpp"
-#include "random.hpp"
+//#include "random.hpp"
 #include "debug.hpp"
 
 
@@ -20,11 +20,11 @@ int main()
 	//string filename = "dataset/com-dblp.ungraph.txt_randomized10p.txt";
 	//ifstream fin("dataset/com-dblp.ungraph.txt_edges10p.txt");
 	
-	string filename = "dataset/Gowalla.txt_randomized15p.txt";
-	ifstream fin("dataset/Gowalla.txt_edges15p.txt");
+	//string filename = "dataset/Gowalla.txt_randomized25p.txt";
+	//ifstream fin("dataset/Gowalla.txt_edges25p.txt");
 
-	//string filename = "dataset/facebook_combined_randomized30p.txt";
-	//ifstream fin("dataset/facebook_combined_edges30p.txt");
+	string filename = "dataset/facebook_combined_randomized30p.txt";
+	ifstream fin("dataset/facebook_combined_edges30p.txt");
 
 	vector<pair<int, int>> addEdgeList;	//edge 파일들 불러와서 벡터에 넣어두기
 	int from, to;
@@ -64,18 +64,6 @@ int main()
 		//s = 2121, t = 2415;
 		//s = 1912, t = 2028;
 		//DynamicSummarization::addEdgeAndSummarize(*sm_graph, *graph, s, t, threshold);
-		
-
-		//for (int i = 0; i < 1000; i++)
-		//{
-		//	//cout << i << " ";
-		//	s = random::Int(0, 4000);
-		//	t = random::Int(0, 4000);
-		//	//printf("i:%d, s:%d, t:%d\n", i, s, t);
-		//	DynamicSummarization::addEdgeAndSummarize(*sm_graph, *graph, s, t, threshold);
-		//}
-		
-
 		
 		
 		//clock_t before;
