@@ -51,23 +51,61 @@ public:
 		//일반노드 두개 요약
 		auto& sNbrs = getNeighborNodes(sg, origin, src);
 		auto& tNbrs = getNeighborNodes(sg, origin, trg);
+		std::sort(sNbrs.begin(), sNbrs.end());
+		std::sort(tNbrs.begin(), tNbrs.end());
+
 
 		Node *sNode, *tNode;
 		NormalNode *snNode, *tnNode;
 		
 		//unordered_set<int> checked;
-		vector<int> summarizedNodes;
-		unordered_set<int> twohops;
-		unordered_set<int>::iterator set_iter;
-		
 		vector<int> checked;
+		vector<int> summarizedNodes;
+		//unordered_set<int> twohops;
+		//unordered_set<int>::iterator set_iter;
+		vector<int> twohops;
+		
 
 		int u;
 
 		//////////////////////////////////////////////////////////////////
 		//1. source --- source's 2-hop node
-		set_iter = twohops.begin();
-		copy(tNbrs.begin(), tNbrs.end(), inserter(twohops, set_iter));	//twohops에 target node의 neighbor 복사
+		///set_iter = twohops.begin();
+		///copy(tNbrs.begin(), tNbrs.end(), inserter(twohops, set_iter));	//twohops에 target node의 neighbor 복사
+
+		//두 배열을 한 배열로 복사(중복 제거)
+		/*twohops.assign(sNbrs.begin(), sNbrs.end());
+		for (int id : tNbrs)
+		{
+			if (find(twohops.begin(), twohops.end(), id) == twohops.end())
+			{
+				twohops.push_back(id);
+			}
+		}*/
+		int i = 0, j = 0;
+		int size1, size2;
+		size1 = (int)sNbrs.size();
+		size2 = (int)tNbrs.size();
+		while (i < size1 && j < size2)
+		{
+			if (sNbrs[i] == sNbrs[j])
+			{
+				twohops.push_back(sNbrs[i]);
+				++i;
+				++j;
+			}
+			else if (sNbrs[i] > tNbrs[j])
+			{
+				twohops.push_back(tNbrs[j]);
+				++j;
+			}
+			else
+			{
+				twohops.push_back(sNbrs[i]);
+				++i;
+			}
+		}
+
 		
 		u = src;
 		while (1)
@@ -117,9 +155,9 @@ public:
 						auto& suNbrs = getNeighborNodes(sg, origin, twohopNode);
 						for (auto neighbor : suNbrs)
 						{
-							if (find(checked.begin(), checked.end(), neighbor) == checked.end() && u != neighbor)	//not found
+							if (find(checked.begin(), checked.end(), neighbor) == checked.end() && u != neighbor && find(twohops.begin(), twohops.end(), neighbor) == twohops.end())	//not found
 							{
-								twohops.emplace(neighbor);
+								twohops.push_back(neighbor);
 							}
 						}
 
@@ -159,9 +197,9 @@ public:
 
 				for (auto twohop : newNbrs)
 				{
-					if (find(checked.begin(), checked.end(), twohop) == checked.end() && u != twohop)	//not found
+					if (find(checked.begin(), checked.end(), twohop) == checked.end() && u != twohop && find(twohops.begin(), twohops.end(), twohop) == twohops.end())	//not found
 					{
-						twohops.emplace(twohop);
+						twohops.push_back(twohop);
 					}
 				}
 			}
@@ -178,8 +216,37 @@ public:
 		checked.clear();
 		summarizedNodes.clear();
 		twohops.clear();
-		set_iter = twohops.begin();
-		copy(sNbrs.begin(), sNbrs.end(), inserter(twohops, set_iter));
+		//set_iter = twohops.begin();
+		//copy(sNbrs.begin(), sNbrs.end(), inserter(twohops, set_iter));
+		//두 배열을 한 배열로 복사(중복 제거)
+		/*twohops.assign(sNbrs.begin(), sNbrs.end());
+		for (int id : tNbrs)
+		{
+			if (find(twohops.begin(), twohops.end(), id) == twohops.end())
+			{
+				twohops.push_back(id);
+			}
+		}*/
+		i = 0, j = 0;
+		while (i < size1 && j < size2)
+		{
+			if (sNbrs[i] == sNbrs[j])
+			{
+				twohops.push_back(sNbrs[i]);
+				++i;
+				++j;
+			}
+			else if (sNbrs[i] > tNbrs[j])
+			{
+				twohops.push_back(tNbrs[j]);
+				++j;
+			}
+			else
+			{
+				twohops.push_back(sNbrs[i]);
+				++i;
+			}
+		}
 		u = trg;
 		while (1)
 		{
@@ -226,9 +293,9 @@ public:
 						auto& suNbrs = getNeighborNodes(sg, origin, twohopNode);
 						for (auto neighbor : suNbrs)
 						{
-							if (find(checked.begin(), checked.end(), neighbor) == checked.end() && u != neighbor)	//not found
+							if (find(checked.begin(), checked.end(), neighbor) == checked.end() && u != neighbor && find(twohops.begin(), twohops.end(), neighbor) == twohops.end())	//not found
 							{
-								twohops.emplace(neighbor);
+								twohops.push_back(neighbor);
 							}
 						}
 
@@ -267,9 +334,9 @@ public:
 
 				for (auto twohop : newNbrs)
 				{
-					if (find(checked.begin(), checked.end(), twohop) == checked.end() && u != twohop)	//not found
+					if (find(checked.begin(), checked.end(), twohop) == checked.end() && u != twohop && find(twohops.begin(), twohops.end(), twohop) == twohops.end())	//not found
 					{
-						twohops.emplace(twohop);
+						twohops.push_back(twohop);
 					}
 				}
 			}
@@ -304,7 +371,7 @@ public:
 			{
 				auto& ns1 = getNeighborNodes(sg, origin, src);
 				auto& ns2 = getNeighborNodes(sg, origin, trg);
-				int total = ns1.size() + ns2.size();
+				int total = (int)ns1.size() + (int)ns2.size();
 				unordered_set<int> set1(ns1.begin(), ns1.end());
 				unordered_set<int> set2(ns2.begin(), ns2.end());
 				vector<int> result;
