@@ -58,11 +58,8 @@ public:
 		Node *sNode, *tNode;
 		NormalNode *snNode, *tnNode;
 		
-		//unordered_set<int> checked;
 		vector<int> checked;
 		vector<int> summarizedNodes;
-		//unordered_set<int> twohops;
-		//unordered_set<int>::iterator set_iter;
 		vector<int> twohops;
 		
 
@@ -82,7 +79,7 @@ public:
 				twohops.push_back(id);
 			}
 		}*/
-		int i = 0, j = 0;
+		register int i = 0, j = 0;
 		int size1, size2;
 		size1 = (int)sNbrs.size();
 		size2 = (int)tNbrs.size();
