@@ -44,6 +44,39 @@ Node* Graph::get(int id)
 	return p;
 }
 
+void Graph::printInfo()
+{
+	//print supernode, normalnode, edge, superedge
+	int normalNodes = 0, superNodes = 0, normalEdges = 0, superEdges = 0;
+
+	for (auto node : nodes)
+	{
+		if (!node)
+			continue;
+
+
+		int nodeType = node->getType();
+		auto& edges = node->getEdges();
+
+		if (nodeType == NORMAL_NODE)
+		{
+			++normalNodes;
+			normalEdges += (int)edges.size();
+		}
+		else //supernode
+		{
+			++superNodes;
+			superEdges += (int)edges.size();
+		}
+	}
+
+
+	printf("* normal nodes: %d\n", normalNodes);
+	printf("* super nodes: %d\n", superNodes);
+	printf("* normal edges: %d\n", normalEdges /2);
+	printf("* super edges: %d\n", superEdges/2);
+}
+
 int Edge::getOther(int one)
 {
 	if (nodes[0] == one)

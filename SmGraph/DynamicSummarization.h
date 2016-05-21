@@ -85,7 +85,7 @@ public:
 		size2 = (int)tNbrs.size();
 		while (i < size1 && j < size2)
 		{
-			if (sNbrs[i] == sNbrs[j])
+			if (sNbrs[i] == tNbrs[j])
 			{
 				twohops.push_back(sNbrs[i]);
 				++i;
@@ -227,7 +227,7 @@ public:
 		i = 0, j = 0;
 		while (i < size1 && j < size2)
 		{
-			if (sNbrs[i] == sNbrs[j])
+			if (sNbrs[i] == tNbrs[j])
 			{
 				twohops.push_back(sNbrs[i]);
 				++i;
@@ -364,63 +364,6 @@ public:
 			{
 				checkNormalNode(sg, origin, src, trg, threshold);
 			}
-			else
-			{
-				auto& ns1 = getNeighborNodes(sg, origin, src);
-				auto& ns2 = getNeighborNodes(sg, origin, trg);
-				int total = (int)ns1.size() + (int)ns2.size();
-				unordered_set<int> set1(ns1.begin(), ns1.end());
-				unordered_set<int> set2(ns2.begin(), ns2.end());
-				vector<int> result;
-
-
-				//
-				if (getSummarizeRatio(sg, origin, src, trg) > threshold)
-				{
-					auto& p1_items = sNode->getEdges();
-					auto& p2_items = tNode->getEdges();
-					vector<int> result;
-
-					if (isSummarizedNode(snNode) && isSummarizedNode(tnNode))	//각자 다른 슈퍼노드에 속한 경우
-					{
-						result.clear();
-						set_difference(set1.begin(), set1.end(), set2.begin(), set2.end(), std::back_inserter(result));
-						for (int id : result) {
-							sg.add(new Edge(trg, id));
-						}
-
-						result.clear();
-						set_difference(set2.begin(), set2.end(), set1.begin(), set1.end(), std::back_inserter(result));
-						for (int id : result) {
-							sg.add(new Edge(src, id));
-						}
-					}
-					else if (isSummarizedNode(snNode))	//슈퍼노드(src) --- 일반노드(trg)
-					{
-						result.clear();
-						set_difference(set2.begin(), set2.end(), set1.begin(), set1.end(), std::back_inserter(result));
-						for (int id : result) {
-							sg.add(new Edge(trg, id));
-						}
-					}
-					else if (isSummarizedNode(tnNode))	//일반노드(src) --- 슈퍼노드(trg)
-					{
-						result.clear();
-						set_difference(set1.begin(), set1.end(), set2.begin(), set2.end(), std::back_inserter(result));
-						for (int id : result) {
-							sg.add(new Edge(src, id));
-						}
-					}
-				}
-				else //요약 안되는 경우
-				{
-					//add + correction
-					snNode->addCorrectionTarget('+', trg);
-					tnNode->addCorrectionTarget('+', src);
-				}
-			}
-
-
 			//else
 			//{
 			//	auto& ns1 = getNeighborNodes(sg, origin, src);
@@ -429,119 +372,39 @@ public:
 			//	unordered_set<int> set1(ns1.begin(), ns1.end());
 			//	unordered_set<int> set2(ns2.begin(), ns2.end());
 			//	vector<int> result;
+			//	//
 			//	if (getSummarizeRatio(sg, origin, src, trg) > threshold)
 			//	{
-			//		SuperNode *ssNode = (SuperNode*)snNode,
-			//				*stNode = (SuperNode*)tnNode;
-			//		auto& sinNode = ssNode->getSummarizedNodeIds();
-			//		auto& tinNode = stNode->getSummarizedNodeIds();
-			//		if (isSummarizedNode(snNode) && isSummarizedNode(tnNode))	//서로 다른 슈퍼노드 안에 있을 경우
+			//		auto& p1_items = sNode->getEdges();
+			//		auto& p2_items = tNode->getEdges();
+			//		vector<int> result;
+			//		if (isSummarizedNode(snNode) && isSummarizedNode(tnNode))	//각자 다른 슈퍼노드에 속한 경우
 			//		{
-			//			int c_plus = 0, c_minus;
-			//			vector<Edge> inexistEdges;	//슈퍼노드 사이에 존재하지 않는 에지들
-			//			//check c+
-			//			for (auto sNodeID : sinNode)
-			//			{
-			//				auto inNode = sg.get(sNodeID);
-			//				for (auto tNodeID : tinNode)
-			//				{
-			//					if (!inNode->hasEdge(sNodeID, tNodeID))
-			//					{
-			//						++c_plus;
-			//						inexistEdges.push_back(Edge(sNodeID, tNodeID));
-			//					}
-			//				}
+			//			result.clear();
+			//			set_difference(set1.begin(), set1.end(), set2.begin(), set2.end(), std::back_inserter(result));
+			//			for (int id : result) {
+			//				sg.add(new Edge(trg, id));
 			//			}
-			//			//check c-
-			//			c_minus = ((int)sinNode.size() + (int)tinNode.size()) - c_plus;
-			//			if (c_plus > c_minus) //if C+ > C-
-			//			{
-			//				//add (+) correction e(n1, n2)
-			//				snNode->addCorrectionTarget('+', trg);
-			//				tnNode->addCorrectionTarget('+', src);
-			//			}
-			//			else // C+ <= C-
-			//			{
-			//				//insert a super edge e(s1, s2) into G
-			//				//and add (-) corrections
-			//				sg.add(new Edge(ssNode->getId(), stNode->getId()));
-			//				for (auto& edge : inexistEdges)
-			//				{
-			//					int srcid = edge.getSource(),
-			//						trgid = edge.getTarget();
-			//					auto sCorrNode = sg.get(srcid);
-			//					auto tCorrNode = sg.get(trgid);
-			//					((NormalNode*)sCorrNode)->addCorrectionTarget('-', trgid);
-			//					((NormalNode*)tCorrNode)->addCorrectionTarget('-', srcid);
-			//				}
+			//			result.clear();
+			//			set_difference(set2.begin(), set2.end(), set1.begin(), set1.end(), std::back_inserter(result));
+			//			for (int id : result) {
+			//				sg.add(new Edge(src, id));
 			//			}
 			//		}
-			//		else if (isSummarizedNode(snNode))	//슈퍼노드(source) --- 일반노드(target)
+			//		else if (isSummarizedNode(snNode))	//슈퍼노드(src) --- 일반노드(trg)
 			//		{
-			//			int c_plus = 0, c_minus;
-			//			vector<Edge> inexistEdges;	//슈퍼노드 사이에 존재하지 않는 에지들
-			//			//calc c_plus
-			//			for (auto sNodeID : sinNode)
-			//			{
-			//				if (!tnNode->hasEdge(sNodeID, trg))
-			//				{
-			//					++c_plus;
-			//					inexistEdges.push_back(Edge(sNodeID, trg));
-			//				}
-			//			}
-			//			c_minus = ((int)sinNode.size() + (int)tinNode.size()) - c_plus;
-			//			if (c_plus > c_minus)
-			//			{
-			//				//add (+) correction e(n1, n2)
-			//				snNode->addCorrectionTarget('+', trg);
-			//				tnNode->addCorrectionTarget('+', src);
-			//			}
-			//			else //C+ <= C-
-			//			{
-			//				sg.add(new Edge(ssNode->getId(), trg));
-			//				for (auto& edge : inexistEdges)
-			//				{
-			//					int srcid = edge.getSource(),
-			//						trgid = edge.getTarget();
-			//					auto sCorrNode = sg.get(srcid);
-			//					auto tCorrNode = sg.get(trgid);
-			//					((NormalNode*)sCorrNode)->addCorrectionTarget('-', trgid);
-			//					((NormalNode*)tCorrNode)->addCorrectionTarget('-', srcid);
-			//				}
+			//			result.clear();
+			//			set_difference(set2.begin(), set2.end(), set1.begin(), set1.end(), std::back_inserter(result));
+			//			for (int id : result) {
+			//				sg.add(new Edge(trg, id));
 			//			}
 			//		}
-			//		else if (isSummarizedNode(tnNode))	//일반노드(source) --- 슈퍼노드(target)
+			//		else if (isSummarizedNode(tnNode))	//일반노드(src) --- 슈퍼노드(trg)
 			//		{
-			//			int c_plus = 0, c_minus;
-			//			vector<Edge> inexistEdges;	//슈퍼노드 사이에 존재하지 않는 에지들
-			//										//calc c_plus
-			//			for (auto tNodeID : tinNode)
-			//			{
-			//				if (!tnNode->hasEdge(tNodeID, src))
-			//				{
-			//					++c_plus;
-			//					inexistEdges.push_back(Edge(tNodeID, src));
-			//				}
-			//			}
-			//			c_minus = ((int)sinNode.size() + (int)tinNode.size()) - c_plus;
-			//			if (c_plus > c_minus)
-			//			{
-			//				//add (+) correction e(n1, n2)
-			//				snNode->addCorrectionTarget('+', trg);
-			//				tnNode->addCorrectionTarget('+', src);
-			//			}
-			//			else //C+ <= C-
-			//			{
-			//				sg.add(new Edge(stNode->getId(), src));
-			//				for (auto& edge : inexistEdges)
-			//				{
-			//					int srcid = edge.getSource(),
-			//						trgid = edge.getTarget();
-			//					auto sCorrNode = sg.get(srcid);
-			//					auto tCorrNode = sg.get(trgid);
-			//					((NormalNode*)sCorrNode)->addCorrectionTarget('-', trgid);
-			//					((NormalNode*)tCorrNode)->addCorrectionTarget('-', srcid);
-			//				}
+			//			result.clear();
+			//			set_difference(set1.begin(), set1.end(), set2.begin(), set2.end(), std::back_inserter(result));
+			//			for (int id : result) {
+			//				sg.add(new Edge(src, id));
 			//			}
 			//		}
 			//	}
@@ -552,6 +415,147 @@ public:
 			//		tnNode->addCorrectionTarget('+', src);
 			//	}
 			//}
+			else
+			{
+				if (getSummarizeRatio(sg, origin, src, trg) > threshold)
+				{
+					int c_plus = 0, c_minus;
+					vector<Edge> inexistEdges;
+
+					if (isSummarizedNode(snNode) && isSummarizedNode(tnNode))	//서로 다른 슈퍼노드 안에 있을 경우
+					{
+						SuperNode *ssNode, *stNode;
+						ssNode = (SuperNode*)sg.get(snNode->getParent());
+						stNode = (SuperNode*)sg.get(tnNode->getParent());
+						auto& sinNode = ssNode->getSummarizedNodeIds();
+						auto& tinNode = stNode->getSummarizedNodeIds();
+
+						//check c+
+						for (auto sNodeID : sinNode)
+						{
+							auto inNode = sg.get(sNodeID);
+							for (auto tNodeID : tinNode)
+							{
+								if (!inNode->hasEdge(sNodeID, tNodeID))
+								{
+									++c_plus;
+									inexistEdges.push_back(Edge(sNodeID, tNodeID));
+								}
+							}
+						}
+						//check c-
+						c_minus = ((int)sinNode.size() * (int)tinNode.size()) - c_plus;
+						if (c_plus > c_minus) //if C+ > C-
+						{
+							//add (+) correction e(n1, n2)
+							snNode->addCorrectionTarget('+', trg);
+							tnNode->addCorrectionTarget('+', src);
+						}
+						else // C+ <= C-
+						{
+							//insert a super edge e(s1, s2) into G
+							//and add (-) corrections
+							sg.add(new Edge(ssNode->getId(), stNode->getId()));
+							for (auto& edge : inexistEdges)
+							{
+								int srcid = edge.getSource(),
+									trgid = edge.getTarget();
+								auto sCorrNode = sg.get(srcid);
+								auto tCorrNode = sg.get(trgid);
+								((NormalNode*)sCorrNode)->addCorrectionTarget('-', trgid);
+								((NormalNode*)tCorrNode)->addCorrectionTarget('-', srcid);
+							}
+						}
+					}
+					else if (isSummarizedNode(snNode))	//슈퍼노드(source) --- 일반노드(target)
+					{
+						SuperNode *ssNode = (SuperNode*)sg.get(snNode->getParent());
+						vector<int>& sinNode = ssNode->getSummarizedNodeIds();
+
+
+						//calc c_plus
+						for (auto sNodeID : sinNode)
+						{
+							if (!tnNode->hasEdge(sNodeID, trg))
+							{
+								++c_plus;
+								inexistEdges.push_back(Edge(sNodeID, trg));
+							}
+						}
+						c_minus = (int)sinNode.size() - c_plus;
+						if (c_plus > c_minus)
+						{
+							//add (+) correction e(n1, n2)
+							snNode->addCorrectionTarget('+', trg);
+							tnNode->addCorrectionTarget('+', src);
+						}
+						else //C+ <= C-
+						{
+							sg.add(new Edge(ssNode->getId(), trg));
+							for (auto& edge : inexistEdges)
+							{
+								int srcid = edge.getSource(),
+									trgid = edge.getTarget();
+								auto sCorrNode = sg.get(srcid);
+								auto tCorrNode = sg.get(trgid);
+								((NormalNode*)sCorrNode)->addCorrectionTarget('-', trgid);
+								((NormalNode*)tCorrNode)->addCorrectionTarget('-', srcid);
+							}
+						}
+					}
+					else if (isSummarizedNode(tnNode))	//일반노드(source) --- 슈퍼노드(target)
+					{
+						SuperNode *stNode = (SuperNode*)sg.get(tnNode->getParent());
+						vector<int>& tinNode = stNode->getSummarizedNodeIds();
+
+						//calc c_plus
+						for (auto tNodeID : tinNode)
+						{
+							if (!tnNode->hasEdge(tNodeID, src))
+							{
+								++c_plus;
+								inexistEdges.push_back(Edge(tNodeID, src));
+							}
+						}
+						c_minus = (int)tinNode.size() - c_plus;
+						if (c_plus > c_minus)
+						{
+							//add (+) correction e(n1, n2)
+							snNode->addCorrectionTarget('+', trg);
+							tnNode->addCorrectionTarget('+', src);
+						}
+						else //C+ <= C-
+						{
+							sg.add(new Edge(stNode->getId(), src));
+							for (auto& edge : inexistEdges)
+							{
+								int srcid = edge.getSource(),
+									trgid = edge.getTarget();
+								auto sCorrNode = sg.get(srcid);
+								auto tCorrNode = sg.get(trgid);
+								((NormalNode*)sCorrNode)->addCorrectionTarget('-', trgid);
+								((NormalNode*)tCorrNode)->addCorrectionTarget('-', srcid);
+							}
+						}
+					}
+
+
+					if (c_plus > c_minus)
+					{
+
+					}
+					else
+					{
+
+					}
+				}
+				else //요약 안되는 경우
+				{
+					//add + correction
+					snNode->addCorrectionTarget('+', trg);
+					tnNode->addCorrectionTarget('+', src);
+				}
+			}
 		}
 	}
 

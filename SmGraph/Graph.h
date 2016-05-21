@@ -77,6 +77,7 @@ public:
 	auto& getNodes() { return nodes; }
 	auto getNodeCount() { return nodes.size(); }
 	auto setMaxNodeCount(int s) { nodes.reserve(s); }
+	void printInfo();
 
 
 protected:
